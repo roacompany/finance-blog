@@ -1,65 +1,150 @@
-import Image from "next/image";
+import Link from "next/link";
+import { getAllPosts } from "@/lib/content";
 
-export default function Home() {
+const categories = ["전체", "금리", "부동산", "주식", "세금"];
+
+type Props = {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export default async function Home(props: Props) {
+  const searchParams = await props.searchParams;
+  const selectedCategory = typeof searchParams.category === 'string' ? searchParams.category : '전체';
+
+  const allPosts = getAllPosts().sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+
+  const filteredPosts = selectedCategory === '전체'
+    ? allPosts
+    : allPosts.filter((post) => post.tags && post.tags.includes(selectedCategory));
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div style={{ minHeight: '100vh', backgroundColor: '#FFFFFF' }}>
+      <header style={{ borderBottom: '1px solid #F2F4F6', padding: '48px 24px' }}>
+        <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+          <h1 style={{ fontSize: '32px', fontWeight: 700, color: '#191F28', letterSpacing: '-0.02em' }}>
+            Finance Blog w.ROA
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p style={{ marginTop: '12px', fontSize: '17px', color: '#8B95A1', lineHeight: 1.6 }}>
+            신뢰할 수 있는 금융 정보와 기술 인사이트
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </header>
+
+      <nav style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 10,
+        backgroundColor: 'rgba(255,255,255,0.95)',
+        backdropFilter: 'blur(8px)',
+        borderBottom: '1px solid #F2F4F6'
+      }}>
+        <div style={{ maxWidth: '700px', margin: '0 auto', padding: '0 24px' }}>
+          <ul style={{ display: 'flex', gap: '8px', overflowX: 'auto', padding: '16px 0', listStyle: 'none', margin: 0 }}>
+            {categories.map((category) => (
+              <li key={category}>
+                <Link
+                  href={category === '전체' ? '/' : `/?category=${category}`}
+                  style={{
+                    display: 'block',
+                    padding: '8px 16px',
+                    borderRadius: '20px',
+                    fontSize: '15px',
+                    fontWeight: 500,
+                    whiteSpace: 'nowrap',
+                    textDecoration: 'none',
+                    transition: 'all 0.2s',
+                    backgroundColor: selectedCategory === category ? '#191F28' : '#F2F4F6',
+                    color: selectedCategory === category ? '#FFFFFF' : '#4E5968',
+                  }}
+                  scroll={false}
+                >
+                  {category}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
+      </nav>
+
+      <main style={{ maxWidth: '700px', margin: '0 auto', padding: '48px 24px' }}>
+        <section>
+          <h2 style={{ marginBottom: '32px', fontSize: '24px', fontWeight: 700, color: '#191F28' }}>
+            {selectedCategory === '전체' ? 'Insights' : selectedCategory}
+          </h2>
+
+          {filteredPosts.length === 0 ? (
+            <div style={{ padding: '80px 0', textAlign: 'center' }}>
+              <p style={{ color: '#8B95A1', fontSize: '17px' }}>아직 작성된 글이 없습니다.</p>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+              {filteredPosts.map((post) => (
+                <Link
+                  key={post.slug}
+                  href={`/posts/${post.slug}`}
+                  style={{ display: 'block', textDecoration: 'none' }}
+                >
+                  <article style={{ borderBottom: '1px solid #F2F4F6', paddingBottom: '32px' }}>
+                    <div style={{ marginBottom: '12px', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                      {post.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          style={{
+                            fontSize: '13px',
+                            fontWeight: 700,
+                            color: '#3182F6',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.02em'
+                          }}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <h3 style={{
+                      marginBottom: '12px',
+                      fontSize: '22px',
+                      fontWeight: 700,
+                      color: '#191F28',
+                      lineHeight: 1.4
+                    }}>
+                      {post.title}
+                    </h3>
+                    <p style={{
+                      marginBottom: '12px',
+                      fontSize: '16px',
+                      lineHeight: 1.6,
+                      color: '#4E5968',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden'
+                    }}>
+                      {post.description}
+                    </p>
+                    <div style={{ fontSize: '14px', color: '#8B95A1' }}>
+                      <time dateTime={post.date}>{post.date}</time>
+                    </div>
+                  </article>
+                </Link>
+              ))}
+            </div>
+          )}
+        </section>
       </main>
+
+      <footer style={{
+        borderTop: '1px solid #F2F4F6',
+        padding: '48px 24px',
+        marginTop: '48px',
+        backgroundColor: '#F9FAFB'
+      }}>
+        <div style={{ maxWidth: '700px', margin: '0 auto', textAlign: 'center' }}>
+          <p style={{ fontSize: '14px', color: '#8B95A1' }}>Financial Tech Blog © 2026</p>
+        </div>
+      </footer>
     </div>
   );
 }
