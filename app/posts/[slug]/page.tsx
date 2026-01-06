@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
-import { getPostBySlug, getPostSlugs } from "@/lib/content";
+import { getPostBySlug, getPostSlugs, formatViews } from "@/lib/content";
 import { useMDXComponents } from "./mdx-components";
 
 interface PageProps {
@@ -80,11 +80,34 @@ export default async function PostPage({ params }: PageProps) {
             {frontmatter.description}
           </p>
 
-          {/* Meta: Date & Tags */}
+          {/* Meta: Date, Views & Tags */}
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '16px' }}>
-            <time style={{ fontSize: '14px', color: '#8B95A1' }} dateTime={frontmatter.date}>
-              {frontmatter.date}
-            </time>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: '#8B95A1' }}>
+              <time dateTime={frontmatter.date}>
+                {frontmatter.date}
+              </time>
+              {formatViews(frontmatter.views) && (
+                <>
+                  <span style={{ color: '#E5E8EB' }}>·</span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    {formatViews(frontmatter.views)}
+                  </span>
+                </>
+              )}
+            </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
               {frontmatter.tags.map((tag) => (
                 <span

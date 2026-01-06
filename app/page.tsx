@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getAllPosts } from "@/lib/content";
+import { getAllPosts, formatViews } from "@/lib/content";
 
 const categories = ["전체", "금리", "부동산", "주식", "세금"];
 
@@ -124,8 +124,35 @@ export default async function Home(props: Props) {
                     }}>
                       {post.description}
                     </p>
-                    <div style={{ fontSize: '14px', color: '#8B95A1' }}>
+                    <div style={{
+                      fontSize: '14px',
+                      color: '#8B95A1',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}>
                       <time dateTime={post.date}>{post.date}</time>
+                      {formatViews(post.views) && (
+                        <>
+                          <span style={{ color: '#E5E8EB' }}>·</span>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                              <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            {formatViews(post.views)}
+                          </span>
+                        </>
+                      )}
                     </div>
                   </article>
                 </Link>

@@ -12,6 +12,21 @@ export interface PostMeta {
   base_date: string;
   tags: string[];
   series: string;
+  views?: number;
+}
+
+// 조회수를 "10+" / "100+" / "1K+" 형식으로 변환
+export function formatViews(views: number | undefined): string | null {
+  if (!views || views < 10) return null;
+
+  if (views >= 10000) return "10K+";
+  if (views >= 5000) return "5K+";
+  if (views >= 1000) return "1K+";
+  if (views >= 500) return "500+";
+  if (views >= 100) return "100+";
+  if (views >= 10) return "10+";
+
+  return null;
 }
 
 export interface Post {
@@ -40,6 +55,7 @@ export function getAllPosts(): PostMeta[] {
       base_date: data.base_date || "",
       tags: data.tags || [],
       series: data.series || "",
+      views: data.views || undefined,
     } as PostMeta;
   });
 
@@ -72,6 +88,7 @@ export function getPostBySlug(slug: string): Post | null {
           base_date: data.base_date || "",
           tags: data.tags || [],
           series: data.series || "",
+          views: data.views || undefined,
         },
         content,
       };
