@@ -4,6 +4,9 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import { getPostBySlug, getPostSlugs, formatViews } from "@/lib/content";
 import { useMDXComponents } from "./mdx-components";
+import type { Metadata } from "next";
+
+const BASE_URL = "https://www.roafinance.me";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -14,7 +17,7 @@ export async function generateStaticParams() {
   return slugs.map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const post = getPostBySlug(slug);
 
@@ -22,9 +25,42 @@ export async function generateMetadata({ params }: PageProps) {
     return { title: "Post Not Found" };
   }
 
+  const { frontmatter } = post;
+  const url = `${BASE_URL}/posts/${frontmatter.slug}`;
+
   return {
-    title: post.frontmatter.title,
-    description: post.frontmatter.description,
+    title: frontmatter.title,
+    description: frontmatter.description,
+    keywords: frontmatter.tags,
+    authors: [{ name: "ROA Finance" }],
+    openGraph: {
+      type: "article",
+      locale: "ko_KR",
+      url,
+      siteName: "ROA Finance Blog",
+      title: frontmatter.title,
+      description: frontmatter.description,
+      publishedTime: frontmatter.date,
+      modifiedTime: frontmatter.base_date || frontmatter.date,
+      tags: frontmatter.tags,
+      images: [
+        {
+          url: "/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: frontmatter.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: frontmatter.title,
+      description: frontmatter.description,
+      images: ["/og-image.png"],
+    },
+    alternates: {
+      canonical: url,
+    },
   };
 }
 
@@ -38,8 +74,39 @@ export default async function PostPage({ params }: PageProps) {
 
   const { frontmatter, content } = post;
 
+  // JSON-LD 구조화 데이터
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: frontmatter.title,
+    description: frontmatter.description,
+    datePublished: frontmatter.date,
+    dateModified: frontmatter.base_date || frontmatter.date,
+    author: {
+      "@type": "Organization",
+      name: "ROA Finance",
+      url: BASE_URL,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "ROA Finance Blog",
+      url: BASE_URL,
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${BASE_URL}/posts/${frontmatter.slug}`,
+    },
+    keywords: frontmatter.tags.join(", "),
+  };
+
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#FFFFFF' }}>
+      {/* JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* Header */}
       <header style={{ borderBottom: '1px solid #F2F4F6', padding: '16px 24px' }}>
         <div style={{ maxWidth: '700px', margin: '0 auto' }}>
