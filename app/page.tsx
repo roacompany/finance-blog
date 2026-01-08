@@ -133,21 +133,21 @@ export default async function Home(props: Props) {
         left: '50%',
         transform: 'translateX(-50%)',
         zIndex: 1000,
-        maxWidth: '90%',
+        maxWidth: 'calc(100% - 40px)',
         width: 'fit-content',
       }}>
         <div style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.85)',
-          backdropFilter: 'blur(20px) saturate(180%)',
-          WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-          borderRadius: '24px',
-          padding: '12px 16px',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)',
-          border: '1px solid rgba(255, 255, 255, 0.18)',
+          backgroundColor: 'rgba(255, 255, 255, 0.72)',
+          backdropFilter: 'blur(40px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+          borderRadius: '20px',
+          padding: '8px',
+          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1), 0 0 1px rgba(0, 0, 0, 0.1)',
+          border: '0.5px solid rgba(255, 255, 255, 0.3)',
         }}>
           <ul style={{
             display: 'flex',
-            gap: '8px',
+            gap: '6px',
             listStyle: 'none',
             margin: 0,
             padding: 0,
@@ -158,43 +158,22 @@ export default async function Home(props: Props) {
                 <Link
                   href={category === '전체' ? '/' : `/?category=${category}`}
                   style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '10px 16px',
-                    borderRadius: '16px',
-                    fontSize: '13px',
+                    display: 'block',
+                    padding: '10px 18px',
+                    borderRadius: '14px',
+                    fontSize: '14px',
                     fontWeight: 600,
                     textDecoration: 'none',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                     backgroundColor: selectedCategory === category
-                      ? 'rgba(49, 130, 246, 0.15)'
+                      ? 'rgba(0, 0, 0, 0.06)'
                       : 'transparent',
-                    color: selectedCategory === category ? '#3182F6' : '#6B7280',
-                    transform: selectedCategory === category ? 'scale(1.05)' : 'scale(1)',
+                    color: selectedCategory === category ? '#191F28' : '#8B95A1',
+                    whiteSpace: 'nowrap',
                   }}
                   scroll={false}
                 >
-                  <span style={{
-                    fontSize: '20px',
-                    marginBottom: '4px',
-                    filter: selectedCategory === category
-                      ? 'drop-shadow(0 2px 4px rgba(49, 130, 246, 0.3))'
-                      : 'none',
-                  }}>
-                    {category === '전체' ? '🏠' :
-                     category === '금리' ? '📊' :
-                     category === '부동산' ? '🏢' :
-                     category === '주식' ? '📈' :
-                     category === '세금' ? '💰' : '📄'}
-                  </span>
-                  <span style={{
-                    fontSize: '11px',
-                    fontWeight: selectedCategory === category ? 700 : 500,
-                  }}>
-                    {category}
-                  </span>
+                  {category}
                 </Link>
               </li>
             ))}
