@@ -19,8 +19,42 @@ export default async function Home(props: Props) {
     ? allPosts
     : allPosts.filter((post) => post.tags && post.tags.includes(selectedCategory));
 
+  // JSON-LD 구조화 데이터
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "금융답게 바라보기, 로아의 시선",
+    "description": "금융을 금융답게 풀어냅니다.",
+    "url": "https://www.roafinance.me",
+    "author": {
+      "@type": "Person",
+      "name": "로아"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "금융답게 바라보기, 로아의 시선",
+      "url": "https://www.roafinance.me"
+    },
+    "blogPost": allPosts.slice(0, 10).map((post) => ({
+      "@type": "BlogPosting",
+      "headline": post.title,
+      "description": post.description,
+      "url": `https://www.roafinance.me/posts/${post.slug}`,
+      "datePublished": post.date,
+      "author": {
+        "@type": "Person",
+        "name": "로아"
+      }
+    }))
+  };
+
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#FFFFFF', paddingBottom: '100px' }}>
+      {/* JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <header style={{ borderBottom: '1px solid #F2F4F6', padding: '48px 24px' }}>
         <div style={{ maxWidth: '700px', margin: '0 auto' }}>
           <h1 style={{ fontSize: '32px', fontWeight: 700, color: '#191F28', letterSpacing: '-0.02em' }}>
