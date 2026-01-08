@@ -169,6 +169,8 @@ export default async function Home(props: Props) {
         zIndex: 1000,
         maxWidth: 'calc(100% - 40px)',
         width: 'fit-content',
+        willChange: 'auto',
+        contain: 'layout style paint',
       }}>
         <div style={{
           backgroundColor: 'rgba(255, 255, 255, 0.72)',
