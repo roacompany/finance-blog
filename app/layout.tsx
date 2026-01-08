@@ -6,11 +6,11 @@ const BASE_URL = "https://www.roafinance.me";
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "ROA Finance Blog | 금융 정보와 투자 인사이트",
-    template: "%s | ROA Finance Blog",
+    default: "금융답게 바라보기, 로아의 시선",
+    template: "%s | 금융답게 바라보기, 로아의 시선",
   },
   description:
-    "금리, 대출, 투자에 대한 신뢰할 수 있는 금융 정보를 제공합니다. 기준금리부터 COFIX, CD금리까지 쉽게 이해할 수 있는 금융 가이드.",
+    "금융을 금융답게 풀어냅니다.",
   keywords: [
     "금리",
     "기준금리",
@@ -25,9 +25,9 @@ export const metadata: Metadata = {
     "예금",
     "적금",
   ],
-  authors: [{ name: "ROA Finance" }],
-  creator: "ROA Finance",
-  publisher: "ROA Finance",
+  authors: [{ name: "로아" }],
+  creator: "로아",
+  publisher: "금융답게 바라보기, 로아의 시선",
   formatDetection: {
     email: false,
     address: false,
@@ -37,24 +37,24 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ko_KR",
     url: BASE_URL,
-    siteName: "ROA Finance Blog",
-    title: "ROA Finance Blog | 금융 정보와 투자 인사이트",
+    siteName: "금융답게 바라보기, 로아의 시선",
+    title: "금융답게 바라보기, 로아의 시선",
     description:
-      "금리, 대출, 투자에 대한 신뢰할 수 있는 금융 정보를 제공합니다.",
+      "금융을 금융답게 풀어냅니다.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "ROA Finance Blog",
+        alt: "금융답게 바라보기, 로아의 시선",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ROA Finance Blog | 금융 정보와 투자 인사이트",
+    title: "금융답게 바라보기, 로아의 시선",
     description:
-      "금리, 대출, 투자에 대한 신뢰할 수 있는 금융 정보를 제공합니다.",
+      "금융을 금융답게 풀어냅니다.",
     images: ["/og-image.png"],
   },
   robots: {

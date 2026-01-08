@@ -20,53 +20,17 @@ export default async function Home(props: Props) {
     : allPosts.filter((post) => post.tags && post.tags.includes(selectedCategory));
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#FFFFFF' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#FFFFFF', paddingBottom: '100px' }}>
       <header style={{ borderBottom: '1px solid #F2F4F6', padding: '48px 24px' }}>
         <div style={{ maxWidth: '700px', margin: '0 auto' }}>
           <h1 style={{ fontSize: '32px', fontWeight: 700, color: '#191F28', letterSpacing: '-0.02em' }}>
-            Finance Blog w.ROA
+            금융답게 바라보기, 로아의 시선
           </h1>
           <p style={{ marginTop: '12px', fontSize: '17px', color: '#8B95A1', lineHeight: 1.6 }}>
-            신뢰할 수 있는 금융 정보와 기술 인사이트
+            금융을 금융답게 풀어냅니다.
           </p>
         </div>
       </header>
-
-      <nav style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 10,
-        backgroundColor: 'rgba(255,255,255,0.95)',
-        backdropFilter: 'blur(8px)',
-        borderBottom: '1px solid #F2F4F6'
-      }}>
-        <div style={{ maxWidth: '700px', margin: '0 auto', padding: '0 24px' }}>
-          <ul style={{ display: 'flex', gap: '8px', overflowX: 'auto', padding: '16px 0', listStyle: 'none', margin: 0 }}>
-            {categories.map((category) => (
-              <li key={category}>
-                <Link
-                  href={category === '전체' ? '/' : `/?category=${category}`}
-                  style={{
-                    display: 'block',
-                    padding: '8px 16px',
-                    borderRadius: '20px',
-                    fontSize: '15px',
-                    fontWeight: 500,
-                    whiteSpace: 'nowrap',
-                    textDecoration: 'none',
-                    transition: 'all 0.2s',
-                    backgroundColor: selectedCategory === category ? '#191F28' : '#F2F4F6',
-                    color: selectedCategory === category ? '#FFFFFF' : '#4E5968',
-                  }}
-                  scroll={false}
-                >
-                  {category}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </nav>
 
       <main style={{ maxWidth: '700px', margin: '0 auto', padding: '48px 24px' }}>
         <section>
@@ -161,6 +125,82 @@ export default async function Home(props: Props) {
           )}
         </section>
       </main>
+
+      {/* iOS Style Bottom Navigation */}
+      <nav style={{
+        position: 'fixed',
+        bottom: '20px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 1000,
+        maxWidth: '90%',
+        width: 'fit-content',
+      }}>
+        <div style={{
+          backgroundColor: 'rgba(255, 255, 255, 0.85)',
+          backdropFilter: 'blur(20px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+          borderRadius: '24px',
+          padding: '12px 16px',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)',
+          border: '1px solid rgba(255, 255, 255, 0.18)',
+        }}>
+          <ul style={{
+            display: 'flex',
+            gap: '8px',
+            listStyle: 'none',
+            margin: 0,
+            padding: 0,
+            alignItems: 'center'
+          }}>
+            {categories.map((category) => (
+              <li key={category}>
+                <Link
+                  href={category === '전체' ? '/' : `/?category=${category}`}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '10px 16px',
+                    borderRadius: '16px',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    backgroundColor: selectedCategory === category
+                      ? 'rgba(49, 130, 246, 0.15)'
+                      : 'transparent',
+                    color: selectedCategory === category ? '#3182F6' : '#6B7280',
+                    transform: selectedCategory === category ? 'scale(1.05)' : 'scale(1)',
+                  }}
+                  scroll={false}
+                >
+                  <span style={{
+                    fontSize: '20px',
+                    marginBottom: '4px',
+                    filter: selectedCategory === category
+                      ? 'drop-shadow(0 2px 4px rgba(49, 130, 246, 0.3))'
+                      : 'none',
+                  }}>
+                    {category === '전체' ? '🏠' :
+                     category === '금리' ? '📊' :
+                     category === '부동산' ? '🏢' :
+                     category === '주식' ? '📈' :
+                     category === '세금' ? '💰' : '📄'}
+                  </span>
+                  <span style={{
+                    fontSize: '11px',
+                    fontWeight: selectedCategory === category ? 700 : 500,
+                  }}>
+                    {category}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </nav>
 
       <footer style={{
         borderTop: '1px solid #F2F4F6',
