@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Clarity } from "@/components/Clarity";
 
 const BASE_URL = "https://www.roafinance.me";
 
@@ -89,7 +90,10 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="theme-color" content="#FFFFFF" />
       </head>
-      <body>{children}</body>
+      <body>
+        <Clarity />
+        {children}
+      </body>
     </html>
   );
 }
