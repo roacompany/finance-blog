@@ -86,10 +86,8 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
-        {/* DNS Prefetch & Preconnect for performance */}
-        <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
-        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://www.clarity.ms" crossOrigin="anonymous" />
+        {/* Mobile Optimization */}
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
 
         {/* Favicon */}
         <link rel="icon" href="/favicon.ico" sizes="any" />
