@@ -24,10 +24,10 @@ export default async function Home(props: Props) {
       <header style={{ borderBottom: '1px solid #F2F4F6', padding: '48px 24px' }}>
         <div style={{ maxWidth: '700px', margin: '0 auto' }}>
           <h1 style={{ fontSize: '32px', fontWeight: 700, color: '#191F28', letterSpacing: '-0.02em' }}>
-            Finance Blog w.ROA
+            금융답게 바라보기, 로아의 시선
           </h1>
           <p style={{ marginTop: '12px', fontSize: '17px', color: '#8B95A1', lineHeight: 1.6 }}>
-            신뢰할 수 있는 금융 정보와 기술 인사이트
+            금융을 금융답게 풀어냅니다.
           </p>
         </div>
       </header>

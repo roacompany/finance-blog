@@ -32,12 +32,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: frontmatter.title,
     description: frontmatter.description,
     keywords: frontmatter.tags,
-    authors: [{ name: "ROA Finance" }],
+    authors: [{ name: "로아" }],
     openGraph: {
       type: "article",
       locale: "ko_KR",
       url,
-      siteName: "ROA Finance Blog",
+      siteName: "금융답게 바라보기, 로아의 시선",
       title: frontmatter.title,
       description: frontmatter.description,
       publishedTime: frontmatter.date,
@@ -83,13 +83,13 @@ export default async function PostPage({ params }: PageProps) {
     datePublished: frontmatter.date,
     dateModified: frontmatter.base_date || frontmatter.date,
     author: {
-      "@type": "Organization",
-      name: "ROA Finance",
+      "@type": "Person",
+      name: "로아",
       url: BASE_URL,
     },
     publisher: {
       "@type": "Organization",
-      name: "ROA Finance Blog",
+      name: "금융답게 바라보기, 로아의 시선",
       url: BASE_URL,
     },
     mainEntityOfPage: {
