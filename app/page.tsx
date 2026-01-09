@@ -49,7 +49,7 @@ export default async function Home(props: Props) {
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#FFFFFF', paddingBottom: '100px' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#FFFFFF', paddingBottom: '100px', position: 'relative' }}>
       {/* JSON-LD */}
       <script
         type="application/ld+json"
@@ -163,14 +163,13 @@ export default async function Home(props: Props) {
       {/* iOS Style Bottom Navigation */}
       <nav style={{
         position: 'fixed',
-        bottom: '20px',
-        left: '50%',
-        transform: 'translateX(-50%)',
+        bottom: 'max(20px, env(safe-area-inset-bottom))',
+        left: '0',
+        right: '0',
         zIndex: 1000,
-        maxWidth: 'calc(100% - 40px)',
-        width: 'fit-content',
-        willChange: 'auto',
-        contain: 'layout style paint',
+        display: 'flex',
+        justifyContent: 'center',
+        pointerEvents: 'none',
       }}>
         <div style={{
           backgroundColor: 'rgba(255, 255, 255, 0.72)',
@@ -180,6 +179,8 @@ export default async function Home(props: Props) {
           padding: '8px',
           boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1), 0 0 1px rgba(0, 0, 0, 0.1)',
           border: '0.5px solid rgba(255, 255, 255, 0.3)',
+          pointerEvents: 'auto',
+          maxWidth: 'calc(100vw - 40px)',
         }}>
           <ul style={{
             display: 'flex',
