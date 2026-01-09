@@ -162,8 +162,8 @@ export default async function Home(props: Props) {
 
       {/* iOS Style Bottom Floating Navigation */}
       <nav style={{
-        position: 'absolute',
-        bottom: '40px',
+        position: 'fixed',
+        bottom: '24px',
         left: '50%',
         transform: 'translateX(-50%)',
         zIndex: 1000,
