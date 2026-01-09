@@ -163,24 +163,19 @@ export default async function Home(props: Props) {
       {/* iOS Style Bottom Navigation */}
       <nav style={{
         position: 'fixed',
-        bottom: 'max(20px, env(safe-area-inset-bottom))',
-        left: '0',
-        right: '0',
+        bottom: '24px',
+        left: '50%',
+        transform: 'translateX(-50%)',
         zIndex: 1000,
-        display: 'flex',
-        justifyContent: 'center',
-        pointerEvents: 'none',
       }}>
         <div style={{
           backgroundColor: 'rgba(255, 255, 255, 0.72)',
           backdropFilter: 'blur(40px) saturate(180%)',
           WebkitBackdropFilter: 'blur(40px) saturate(180%)',
           borderRadius: '20px',
-          padding: '8px',
+          padding: '8px 12px',
           boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1), 0 0 1px rgba(0, 0, 0, 0.1)',
           border: '0.5px solid rgba(255, 255, 255, 0.3)',
-          pointerEvents: 'auto',
-          maxWidth: 'calc(100vw - 40px)',
         }}>
           <ul style={{
             display: 'flex',
