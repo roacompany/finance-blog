@@ -49,7 +49,7 @@ export default async function Home(props: Props) {
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#FFFFFF', paddingBottom: '100px', position: 'relative' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#FFFFFF', paddingBottom: '120px', position: 'relative' }}>
       {/* JSON-LD */}
       <script
         type="application/ld+json"
@@ -160,10 +160,10 @@ export default async function Home(props: Props) {
         </section>
       </main>
 
-      {/* iOS Style Bottom Navigation */}
+      {/* iOS Style Bottom Floating Navigation */}
       <nav style={{
-        position: 'fixed',
-        bottom: '24px',
+        position: 'absolute',
+        bottom: '40px',
         left: '50%',
         transform: 'translateX(-50%)',
         zIndex: 1000,
