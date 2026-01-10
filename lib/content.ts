@@ -113,3 +113,50 @@ export function getPostSlugs(): string[] {
     return data.slug as string;
   });
 }
+
+// 시리즈별 포스트 가져오기 (날짜 오름차순 정렬)
+export function getPostsBySeries(series: string): PostMeta[] {
+  const allPosts = getAllPosts();
+  return allPosts
+    .filter((post) => post.series === series)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+}
+
+// 유사도 계산 함수
+function calculateSimilarity(post1: PostMeta, post2: PostMeta): number {
+  let score = 0;
+
+  // 같은 시리즈 = 30점
+  if (post1.series === post2.series) {
+    score += 30;
+  }
+
+  // 공통 태그 개수 × 10점
+  const commonTags = post1.tags.filter((tag) => post2.tags.includes(tag));
+  score += commonTags.length * 10;
+
+  // 날짜 근접성 (7일 이내 = 5점)
+  const daysDiff = Math.abs(
+    new Date(post1.date).getTime() - new Date(post2.date).getTime()
+  ) / (1000 * 60 * 60 * 24);
+  if (daysDiff < 7) {
+    score += 5;
+  }
+
+  return score;
+}
+
+// 관련 포스트 가져오기
+export function getRelatedPosts(currentPost: PostMeta, limit = 3): PostMeta[] {
+  const allPosts = getAllPosts();
+
+  return allPosts
+    .filter((post) => post.slug !== currentPost.slug)
+    .map((post) => ({
+      post,
+      score: calculateSimilarity(currentPost, post),
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((item) => item.post);
+}

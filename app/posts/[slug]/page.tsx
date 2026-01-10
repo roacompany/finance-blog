@@ -4,6 +4,8 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import { getPostBySlug, getPostSlugs, formatViews } from "@/lib/content";
 import { useMDXComponents } from "./mdx-components";
+import { SeriesNav } from "@/components/SeriesNav";
+import { RelatedPosts } from "@/components/RelatedPosts";
 import type { Metadata } from "next";
 
 const BASE_URL = "https://www.roafinance.me";
@@ -195,6 +197,11 @@ export default async function PostPage({ params }: PageProps) {
           </div>
         </header>
 
+        {/* Series Navigation */}
+        {frontmatter.series && (
+          <SeriesNav series={frontmatter.series} currentSlug={frontmatter.slug} />
+        )}
+
         {/* Post Content */}
         <div>
           <MDXRemote
@@ -207,6 +214,9 @@ export default async function PostPage({ params }: PageProps) {
             components={useMDXComponents({})}
           />
         </div>
+
+        {/* Related Posts */}
+        <RelatedPosts currentPost={frontmatter} />
       </article>
 
       {/* Footer */}
