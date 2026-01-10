@@ -49,7 +49,7 @@ export default async function Home(props: Props) {
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#FFFFFF', position: 'relative' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#FFFFFF', position: 'relative', paddingBottom: '100px' }}>
       {/* JSON-LD */}
       <script
         type="application/ld+json"
@@ -160,47 +160,51 @@ export default async function Home(props: Props) {
         </section>
       </main>
 
-      {/* iOS Style Floating Navigation - 컨텐츠 하단에 떠있는 버튼 */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        padding: '0 24px',
-        marginBottom: '40px',
+      {/* Bottom Floating Navigation - 화면 하단 고정 */}
+      <nav style={{
+        position: 'fixed',
+        bottom: '16px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 1000,
+        width: 'calc(100% - 48px)',
+        maxWidth: '580px',
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
       }}>
-        <nav style={{
-          position: 'relative',
+        <div style={{
+          backgroundColor: 'rgba(255, 255, 255, 0.85)',
+          backdropFilter: 'blur(40px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+          borderRadius: '28px',
+          padding: '6px 8px',
+          boxShadow: '0 12px 48px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08)',
+          border: '0.5px solid rgba(0, 0, 0, 0.04)',
         }}>
-          <div style={{
-            backgroundColor: 'rgba(255, 255, 255, 0.72)',
-            backdropFilter: 'blur(40px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(40px) saturate(180%)',
-            borderRadius: '20px',
-            padding: '8px 12px',
-            boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1), 0 0 1px rgba(0, 0, 0, 0.1)',
-            border: '0.5px solid rgba(255, 255, 255, 0.3)',
-          }}>
           <ul style={{
             display: 'flex',
-            gap: '6px',
+            gap: '4px',
             listStyle: 'none',
             margin: 0,
             padding: 0,
             alignItems: 'center'
           }}>
             {categories.map((category) => (
-              <li key={category}>
+              <li key={category} style={{ flex: 1 }}>
                 <Link
                   href={category === '전체' ? '/' : `/?category=${category}`}
                   style={{
-                    display: 'block',
-                    padding: '10px 18px',
-                    borderRadius: '14px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minHeight: '44px',
+                    padding: '8px 12px',
+                    borderRadius: '20px',
                     fontSize: '14px',
-                    fontWeight: 600,
+                    fontWeight: selectedCategory === category ? 700 : 600,
                     textDecoration: 'none',
-                    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
                     backgroundColor: selectedCategory === category
-                      ? 'rgba(0, 0, 0, 0.06)'
+                      ? 'rgba(0, 0, 0, 0.1)'
                       : 'transparent',
                     color: selectedCategory === category ? '#191F28' : '#8B95A1',
                     whiteSpace: 'nowrap',
@@ -212,9 +216,8 @@ export default async function Home(props: Props) {
               </li>
             ))}
           </ul>
-          </div>
-        </nav>
-      </div>
+        </div>
+      </nav>
 
       <footer style={{
         borderTop: '1px solid #F2F4F6',
