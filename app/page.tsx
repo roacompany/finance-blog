@@ -49,7 +49,7 @@ export default async function Home(props: Props) {
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#FFFFFF', paddingBottom: '120px', position: 'relative' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#FFFFFF', position: 'relative' }}>
       {/* JSON-LD */}
       <script
         type="application/ld+json"
@@ -160,23 +160,25 @@ export default async function Home(props: Props) {
         </section>
       </main>
 
-      {/* iOS Style Bottom Floating Navigation */}
-      <nav style={{
-        position: 'fixed',
-        bottom: '24px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        zIndex: 1000,
+      {/* iOS Style Floating Navigation - 컨텐츠 하단에 떠있는 버튼 */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        padding: '0 24px',
+        marginBottom: '40px',
       }}>
-        <div style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.72)',
-          backdropFilter: 'blur(40px) saturate(180%)',
-          WebkitBackdropFilter: 'blur(40px) saturate(180%)',
-          borderRadius: '20px',
-          padding: '8px 12px',
-          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1), 0 0 1px rgba(0, 0, 0, 0.1)',
-          border: '0.5px solid rgba(255, 255, 255, 0.3)',
+        <nav style={{
+          position: 'relative',
         }}>
+          <div style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.72)',
+            backdropFilter: 'blur(40px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+            borderRadius: '20px',
+            padding: '8px 12px',
+            boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1), 0 0 1px rgba(0, 0, 0, 0.1)',
+            border: '0.5px solid rgba(255, 255, 255, 0.3)',
+          }}>
           <ul style={{
             display: 'flex',
             gap: '6px',
@@ -210,8 +212,9 @@ export default async function Home(props: Props) {
               </li>
             ))}
           </ul>
-        </div>
-      </nav>
+          </div>
+        </nav>
+      </div>
 
       <footer style={{
         borderTop: '1px solid #F2F4F6',
