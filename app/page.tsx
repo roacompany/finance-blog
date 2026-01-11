@@ -1,11 +1,54 @@
 import Link from "next/link";
 import { getAllPosts, formatViews } from "@/lib/content";
+import type { Metadata } from "next";
 
 const categories = ["전체", "금리", "부동산", "주식", "세금"];
+const BASE_URL = "https://www.roafinance.me";
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
+
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const searchParams = await props.searchParams;
+  const selectedCategory = typeof searchParams.category === 'string' ? searchParams.category : '전체';
+
+  const title = selectedCategory === '전체'
+    ? '금융답게 바라보기, 로아의 시선'
+    : `${selectedCategory} - 금융답게 바라보기, 로아의 시선`;
+
+  const description = '금융을 금융답게 풀어냅니다.';
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: BASE_URL, // 모든 카테고리 페이지는 홈으로 canonical 설정
+    },
+    openGraph: {
+      type: 'website',
+      locale: 'ko_KR',
+      url: BASE_URL,
+      siteName: '금융답게 바라보기, 로아의 시선',
+      title,
+      description,
+      images: [
+        {
+          url: '/og-image.png',
+          width: 1200,
+          height: 630,
+          alt: '금융답게 바라보기, 로아의 시선',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: ['/og-image.png'],
+    },
+  };
+}
 
 export default async function Home(props: Props) {
   const searchParams = await props.searchParams;
@@ -25,7 +68,7 @@ export default async function Home(props: Props) {
     "@type": "Blog",
     "name": "금융답게 바라보기, 로아의 시선",
     "description": "금융을 금융답게 풀어냅니다.",
-    "url": "https://www.roafinance.me",
+    "url": BASE_URL,
     "author": {
       "@type": "Person",
       "name": "로아"
@@ -33,13 +76,13 @@ export default async function Home(props: Props) {
     "publisher": {
       "@type": "Organization",
       "name": "금융답게 바라보기, 로아의 시선",
-      "url": "https://www.roafinance.me"
+      "url": BASE_URL
     },
     "blogPost": allPosts.slice(0, 10).map((post) => ({
       "@type": "BlogPosting",
       "headline": post.title,
       "description": post.description,
-      "url": `https://www.roafinance.me/posts/${post.slug}`,
+      "url": `${BASE_URL}/posts/${post.slug}`,
       "datePublished": post.date,
       "author": {
         "@type": "Person",
