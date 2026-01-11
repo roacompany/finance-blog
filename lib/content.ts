@@ -12,12 +12,18 @@ export interface PostMeta {
   base_date: string;
   tags: string[];
   series: string;
-  views?: number;
+  views?: number | string;
 }
 
 // 조회수를 "10+" / "100+" / "1K+" 형식으로 변환
-export function formatViews(views: number | undefined): string | null {
-  if (!views || views < 10) return null;
+export function formatViews(views: number | string | undefined): string | null {
+  if (!views) return null;
+
+  // 이미 문자열이면 그대로 반환
+  if (typeof views === 'string') return views;
+
+  // 숫자면 포맷팅
+  if (views < 10) return null;
 
   if (views >= 10000) return "10K+";
   if (views >= 5000) return "5K+";

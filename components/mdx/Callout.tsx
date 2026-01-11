@@ -25,9 +25,8 @@ export default function Callout({ type = "info", title, children }: CalloutProps
       border: `1px solid ${s.border}`,
       backgroundColor: s.bg,
     }}>
-      <div style={{ display: 'flex', gap: '12px' }}>
+      <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
         <div style={{
-          marginTop: '2px',
           width: '24px',
           height: '24px',
           borderRadius: '50%',
@@ -42,9 +41,9 @@ export default function Callout({ type = "info", title, children }: CalloutProps
         }}>
           !
         </div>
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           {title && (
-            <strong style={{ display: 'block', marginBottom: '8px', fontWeight: 700, color: s.title, fontSize: '15px' }}>
+            <strong style={{ display: 'block', marginBottom: '8px', fontWeight: 700, color: s.title, fontSize: '15px', lineHeight: 1.5 }}>
               {title}
             </strong>
           )}
@@ -56,7 +55,7 @@ export default function Callout({ type = "info", title, children }: CalloutProps
           }}>
             <style>{`
               .callout-content ul, .callout-content ol {
-                margin: 0;
+                margin: 8px 0;
                 padding-left: 20px;
                 color: #4E5968;
               }
@@ -65,8 +64,11 @@ export default function Callout({ type = "info", title, children }: CalloutProps
                 color: #4E5968;
               }
               .callout-content p {
-                margin: 0;
+                margin: 0 0 8px 0;
                 color: #4E5968;
+              }
+              .callout-content p:last-child {
+                margin-bottom: 0;
               }
               .callout-content strong {
                 color: #191F28;
