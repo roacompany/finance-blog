@@ -155,7 +155,7 @@ export default function DsrCalculator() {
               color: '#8B95A1',
               fontSize: '14px',
             }}>
-              만원
+              원
             </span>
           </div>
           <div style={{ marginTop: '4px', fontSize: '12px', color: '#8B95A1' }}>
