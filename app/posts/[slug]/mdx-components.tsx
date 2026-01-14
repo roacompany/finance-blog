@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Callout from "@/components/mdx/Callout";
 import { Accordion } from "@/components/mdx/Accordion";
-import { LoanCalculator } from "@/components/calculators";
+import { LoanCalculator, DsrCalculator } from "@/components/calculators";
 
 export function useMDXComponents(components: any) {
   return {
@@ -9,6 +9,7 @@ export function useMDXComponents(components: any) {
     Callout,
     Accordion,
     LoanCalculator,
+    DsrCalculator,
     blockquote: (props: any) => <Callout type="info">{props.children}</Callout>,
 
     p: ({ children }: any) => (
