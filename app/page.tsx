@@ -3,6 +3,12 @@ import { getAllPosts, formatViews } from "@/lib/content";
 import type { Metadata } from "next";
 
 const categories = ["전체", "금리", "부동산", "주식", "세금"];
+const seriesOptions = [
+  { id: "all", name: "전체" },
+  { id: "Series 00. 프롤로그", name: "Series 00" },
+  { id: "Series 01. 금리·통화정책", name: "Series 01" },
+  { id: "Series 02. 실전 대출 가이드", name: "Series 02" },
+];
 const BASE_URL = "https://www.roafinance.me";
 
 type Props = {
@@ -12,10 +18,15 @@ type Props = {
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const searchParams = await props.searchParams;
   const selectedCategory = typeof searchParams.category === 'string' ? searchParams.category : '전체';
+  const selectedSeries = typeof searchParams.series === 'string' ? searchParams.series : 'all';
 
-  const title = selectedCategory === '전체'
-    ? '금융답게 바라보기, 로아의 시선'
-    : `${selectedCategory} - 금융답게 바라보기, 로아의 시선`;
+  let title = '금융답게 바라보기, 로아의 시선';
+  if (selectedSeries !== 'all') {
+    const series = seriesOptions.find(s => s.id === selectedSeries);
+    title = `${series?.name || selectedSeries} - 금융답게 바라보기, 로아의 시선`;
+  } else if (selectedCategory !== '전체') {
+    title = `${selectedCategory} - 금융답게 바라보기, 로아의 시선`;
+  }
 
   const description = '금융을 금융답게 풀어냅니다.';
 
@@ -53,14 +64,24 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 export default async function Home(props: Props) {
   const searchParams = await props.searchParams;
   const selectedCategory = typeof searchParams.category === 'string' ? searchParams.category : '전체';
+  const selectedSeries = typeof searchParams.series === 'string' ? searchParams.series : 'all';
 
   const allPosts = getAllPosts().sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 
-  const filteredPosts = selectedCategory === '전체'
-    ? allPosts
-    : allPosts.filter((post) => post.tags && post.tags.includes(selectedCategory));
+  // 시리즈 필터링 우선, 그 다음 카테고리 필터링
+  let filteredPosts = allPosts;
+  if (selectedSeries !== 'all') {
+    filteredPosts = filteredPosts.filter((post) => post.series === selectedSeries);
+  } else if (selectedCategory !== '전체') {
+    filteredPosts = filteredPosts.filter((post) => post.tags && post.tags.includes(selectedCategory));
+  }
+
+  // Empty 상태일 때 추천 아티클 (최신 글 3개)
+  const recommendedPosts = filteredPosts.length === 0
+    ? allPosts.slice(0, 3)
+    : [];
 
   // JSON-LD 구조화 데이터
   const jsonLd = {
@@ -107,8 +128,11 @@ export default async function Home(props: Props) {
             금융을 금융답게 풀어냅니다.
           </p>
 
-          {/* 상단 네비게이션 */}
+          {/* 상단 네비게이션 - 시리즈 */}
           <nav style={{ marginTop: '32px' }}>
+            <h2 style={{ margin: 0, marginBottom: '12px', fontSize: '14px', fontWeight: 600, color: '#8B95A1' }}>
+              시리즈
+            </h2>
             <ul style={{
               display: 'flex',
               gap: '8px',
@@ -117,10 +141,10 @@ export default async function Home(props: Props) {
               padding: 0,
               flexWrap: 'wrap'
             }}>
-              {categories.map((category) => (
-                <li key={category}>
+              {seriesOptions.map((series) => (
+                <li key={series.id}>
                   <Link
-                    href={category === '전체' ? '/' : `/?category=${category}`}
+                    href={series.id === 'all' ? '/' : `/?series=${encodeURIComponent(series.id)}`}
                     style={{
                       display: 'block',
                       padding: '10px 18px',
@@ -129,31 +153,149 @@ export default async function Home(props: Props) {
                       fontWeight: 600,
                       textDecoration: 'none',
                       transition: 'all 0.2s ease',
-                      backgroundColor: selectedCategory === category
-                        ? 'rgba(0, 0, 0, 0.08)'
+                      backgroundColor: selectedSeries === series.id
+                        ? '#3182F6'
                         : 'transparent',
-                      color: selectedCategory === category ? '#191F28' : '#8B95A1',
+                      color: selectedSeries === series.id ? '#FFFFFF' : '#8B95A1',
+                      border: selectedSeries === series.id ? 'none' : '1px solid #E5E8EB',
                     }}
                     scroll={false}
                   >
-                    {category}
+                    {series.name}
                   </Link>
                 </li>
               ))}
             </ul>
           </nav>
+
+          {/* 상단 네비게이션 - 카테고리 */}
+          {selectedSeries === 'all' && (
+            <nav style={{ marginTop: '24px' }}>
+              <h2 style={{ margin: 0, marginBottom: '12px', fontSize: '14px', fontWeight: 600, color: '#8B95A1' }}>
+                카테고리
+              </h2>
+              <ul style={{
+                display: 'flex',
+                gap: '8px',
+                listStyle: 'none',
+                margin: 0,
+                padding: 0,
+                flexWrap: 'wrap'
+              }}>
+                {categories.map((category) => (
+                  <li key={category}>
+                    <Link
+                      href={category === '전체' ? '/' : `/?category=${category}`}
+                      style={{
+                        display: 'block',
+                        padding: '10px 18px',
+                        borderRadius: '14px',
+                        fontSize: '14px',
+                        fontWeight: 600,
+                        textDecoration: 'none',
+                        transition: 'all 0.2s ease',
+                        backgroundColor: selectedCategory === category
+                          ? 'rgba(0, 0, 0, 0.08)'
+                          : 'transparent',
+                        color: selectedCategory === category ? '#191F28' : '#8B95A1',
+                      }}
+                      scroll={false}
+                    >
+                      {category}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
         </div>
       </header>
 
       <main style={{ maxWidth: '700px', margin: '0 auto', padding: '48px 24px' }}>
         <section>
           <h2 style={{ marginBottom: '32px', fontSize: '24px', fontWeight: 700, color: '#191F28' }}>
-            {selectedCategory === '전체' ? 'Insights' : selectedCategory}
+            {selectedSeries !== 'all'
+              ? seriesOptions.find(s => s.id === selectedSeries)?.name || 'Insights'
+              : selectedCategory === '전체' ? 'Insights' : selectedCategory}
           </h2>
 
           {filteredPosts.length === 0 ? (
-            <div style={{ padding: '80px 0', textAlign: 'center' }}>
-              <p style={{ color: '#8B95A1', fontSize: '17px' }}>아직 작성된 글이 없습니다.</p>
+            <div style={{ padding: '40px 0' }}>
+              <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+                <p style={{ color: '#8B95A1', fontSize: '17px', marginBottom: '8px' }}>아직 작성된 글이 없습니다.</p>
+                <p style={{ color: '#B0B8C1', fontSize: '14px' }}>다른 추천 글을 확인해보세요.</p>
+              </div>
+
+              {/* 추천 아티클 */}
+              {recommendedPosts.length > 0 && (
+                <>
+                  <h3 style={{ marginBottom: '24px', fontSize: '18px', fontWeight: 700, color: '#191F28', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span>💡</span>
+                    <span>추천 글</span>
+                  </h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                    {recommendedPosts.map((post) => (
+                      <Link
+                        key={post.slug}
+                        href={`/posts/${post.slug}`}
+                        style={{ display: 'block', textDecoration: 'none' }}
+                      >
+                        <article style={{
+                          padding: '20px',
+                          backgroundColor: '#F9FAFB',
+                          border: '1px solid #E5E8EB',
+                          borderRadius: '12px',
+                          transition: 'all 0.2s ease'
+                        }}>
+                          <div style={{ marginBottom: '12px', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                            {post.tags.map((tag) => (
+                              <span
+                                key={tag}
+                                style={{
+                                  fontSize: '13px',
+                                  fontWeight: 700,
+                                  color: '#3182F6',
+                                  textTransform: 'uppercase',
+                                  letterSpacing: '0.02em'
+                                }}
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                          <h4 style={{
+                            marginBottom: '8px',
+                            fontSize: '18px',
+                            fontWeight: 700,
+                            color: '#191F28',
+                            lineHeight: 1.4
+                          }}>
+                            {post.title}
+                          </h4>
+                          <p style={{
+                            marginBottom: '8px',
+                            fontSize: '14px',
+                            lineHeight: 1.6,
+                            color: '#4E5968',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden'
+                          }}>
+                            {post.description}
+                          </p>
+                          <div style={{
+                            fontSize: '13px',
+                            color: '#8B95A1',
+                          }}>
+                            <time dateTime={post.date}>{post.date}</time>
+                          </div>
+                        </article>
+                      </Link>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
