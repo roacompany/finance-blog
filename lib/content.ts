@@ -16,31 +16,16 @@ export interface PostMeta {
   readingTime?: string;
 }
 
-// 조회수를 "10+" / "100+" / "1K+" 형식으로 변환
-export function formatViews(views: number | string | undefined): string | null {
-  if (!views) return null;
-
-  // 이미 문자열이면 그대로 반환
-  if (typeof views === 'string') return views;
-
-  // Analytics 증폭: 실제 수치 × 100
-  const amplifiedViews = views * 100;
-
-  // 숫자면 포맷팅
-  if (amplifiedViews < 10) return null;
-
-  if (amplifiedViews >= 10000) return "10K+";
-  if (amplifiedViews >= 5000) return "5K+";
-  if (amplifiedViews >= 1000) return "1K+";
-  if (amplifiedViews >= 500) return "500+";
-  if (amplifiedViews >= 100) return "100+";
-  if (amplifiedViews >= 10) return "10+";
-
-  return null;
-}
+// Re-export formatViews from utils for backward compatibility
+export { formatViews } from "./utils";
 
 // 읽는 시간 계산 (한국어 평균 읽기 속도: 분당 350자)
 export function calculateReadingTime(content: string): string {
+  // null/undefined 체크
+  if (!content || typeof content !== 'string') {
+    return '1분';
+  }
+
   // 마크다운 문법 제거 (제목, 링크, 코드 블록 등)
   const plainText = content
     .replace(/#{1,6}\s/g, '') // 제목
@@ -52,7 +37,7 @@ export function calculateReadingTime(content: string): string {
     .trim();
 
   const charCount = plainText.length;
-  const minutes = Math.ceil(charCount / 350);
+  const minutes = Math.max(1, Math.ceil(charCount / 350)); // 최소 1분
 
   return `${minutes}분`;
 }
