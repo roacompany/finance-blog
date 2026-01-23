@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Clarity } from "@/components/Clarity";
+import { Header, Footer } from "@/components/layout";
 
 const BASE_URL = "https://www.roafinance.me";
 
@@ -112,7 +113,11 @@ export default function RootLayout({
       </head>
       <body>
         <Clarity />
-        {children}
+        <Header />
+        <main className="min-h-screen">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );
