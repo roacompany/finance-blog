@@ -1,16 +1,21 @@
 import Link from 'next/link';
-import { getPostsBySeries, type PostMeta } from '@/lib/content';
+import { getPostsBySeries } from '@/lib/content';
 
 interface SeriesNavProps {
   series: string;
   currentSlug: string;
 }
 
+/**
+ * SeriesNav Component
+ * 토스 스타일의 시리즈 네비게이션
+ * Design System 적용으로 인라인 스타일 제거
+ */
 export function SeriesNav({ series, currentSlug }: SeriesNavProps) {
   const seriesPosts = getPostsBySeries(series);
 
   if (seriesPosts.length <= 1) {
-    return null; // 시리즈에 포스트가 1개 이하면 네비게이션 숨김
+    return null;
   }
 
   const currentIndex = seriesPosts.findIndex((post) => post.slug === currentSlug);
@@ -18,44 +23,15 @@ export function SeriesNav({ series, currentSlug }: SeriesNavProps) {
   const nextPost = currentIndex < seriesPosts.length - 1 ? seriesPosts[currentIndex + 1] : null;
 
   return (
-    <div
-      style={{
-        marginTop: '48px',
-        padding: '24px',
-        backgroundColor: '#F9FAFB',
-        borderRadius: '12px',
-        border: '1px solid #E5E8EB',
-      }}
-    >
-      {/* 시리즈 제목 */}
-      <h3
-        style={{
-          margin: 0,
-          marginBottom: '16px',
-          fontSize: '16px',
-          fontWeight: 700,
-          color: '#191F28',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-        }}
-      >
+    <div className="mt-12 p-6 bg-gray-50 rounded-xl border border-gray-200">
+      {/* Series Title */}
+      <h3 className="flex items-center gap-2 mb-4 text-base font-bold text-gray-900">
         <span>📚</span>
         <span>{series}</span>
       </h3>
 
-      {/* 시리즈 포스트 목록 */}
-      <ul
-        style={{
-          margin: 0,
-          marginBottom: '20px',
-          padding: 0,
-          listStyle: 'none',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '8px',
-        }}
-      >
+      {/* Series Posts List */}
+      <ul className="flex flex-col gap-2 mb-5 list-none p-0">
         {seriesPosts.map((post, idx) => {
           const isCurrent = post.slug === currentSlug;
           const isCompleted = idx < currentIndex;
@@ -64,75 +40,49 @@ export function SeriesNav({ series, currentSlug }: SeriesNavProps) {
             <li key={post.slug}>
               <Link
                 href={`/posts/${post.slug}`}
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '8px',
-                  padding: '8px 12px',
-                  borderRadius: '8px',
-                  backgroundColor: isCurrent ? '#FFFFFF' : 'transparent',
-                  border: isCurrent ? '1px solid #3182F6' : '1px solid transparent',
-                  textDecoration: 'none',
-                  transition: 'all 0.2s ease',
-                  fontSize: '14px',
-                  lineHeight: 1.5,
-                  color: isCurrent ? '#3182F6' : isCompleted ? '#4E5968' : '#8B95A1',
-                  fontWeight: isCurrent ? 600 : 400,
-                }}
+                className={`
+                  flex items-start gap-2 px-3 py-2 rounded-lg text-sm leading-relaxed
+                  transition-all duration-200 no-underline
+                  ${
+                    isCurrent
+                      ? 'bg-white border-2 border-blue-600 text-blue-600 font-semibold'
+                      : isCompleted
+                      ? 'bg-gray-100 border border-transparent text-gray-700 hover:bg-gray-200'
+                      : 'bg-transparent border border-transparent text-gray-500 hover:bg-gray-100'
+                  }
+                `}
               >
-                <span style={{ minWidth: '16px' }}>
-                  {isCompleted && '✅'}
-                  {isCurrent && '📍'}
+                <span className="min-w-[16px] flex-shrink-0">
+                  {isCompleted && '✓'}
+                  {isCurrent && '●'}
                   {!isCompleted && !isCurrent && `${idx + 1}.`}
                 </span>
-                <span>{post.title}</span>
+                <span className="flex-1">{post.title}</span>
               </Link>
             </li>
           );
         })}
       </ul>
 
-      {/* 이전/다음 네비게이션 */}
+      {/* Previous/Next Navigation */}
       {(prevPost || nextPost) && (
         <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: prevPost && nextPost ? '1fr 1fr' : '1fr',
-            gap: '12px',
-            paddingTop: '16px',
-            borderTop: '1px solid #E5E8EB',
-          }}
+          className={`
+            grid gap-3 pt-4 border-t border-gray-200
+            ${prevPost && nextPost ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}
+          `}
         >
           {prevPost && (
             <Link
               href={`/posts/${prevPost.slug}`}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '4px',
-                padding: '12px',
-                backgroundColor: '#FFFFFF',
-                border: '1px solid #E5E8EB',
-                borderRadius: '8px',
-                textDecoration: 'none',
-                transition: 'all 0.2s ease',
-              }}
+              className="flex flex-col gap-1 px-4 py-3 bg-white border-2 border-gray-200 rounded-xl
+                         no-underline transition-all duration-200
+                         hover:border-blue-600 hover:bg-blue-50 group"
             >
-              <span style={{ fontSize: '12px', color: '#8B95A1', fontWeight: 500 }}>
+              <span className="text-xs text-gray-500 font-medium group-hover:text-blue-600 transition-colors">
                 ← 이전 글
               </span>
-              <span
-                style={{
-                  fontSize: '14px',
-                  color: '#191F28',
-                  fontWeight: 600,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  display: '-webkit-box',
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: 'vertical',
-                }}
-              >
+              <span className="text-sm text-gray-900 font-semibold line-clamp-2">
                 {prevPost.title}
               </span>
             </Link>
@@ -141,34 +91,17 @@ export function SeriesNav({ series, currentSlug }: SeriesNavProps) {
           {nextPost && (
             <Link
               href={`/posts/${nextPost.slug}`}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '4px',
-                padding: '12px',
-                backgroundColor: '#FFFFFF',
-                border: '1px solid #E5E8EB',
-                borderRadius: '8px',
-                textDecoration: 'none',
-                transition: 'all 0.2s ease',
-                textAlign: nextPost && !prevPost ? 'left' : 'right',
-              }}
+              className={`
+                flex flex-col gap-1 px-4 py-3 bg-blue-600 rounded-xl
+                no-underline transition-all duration-200
+                hover:bg-blue-700
+                ${!prevPost ? 'text-left' : 'text-right'}
+              `}
             >
-              <span style={{ fontSize: '12px', color: '#8B95A1', fontWeight: 500 }}>
+              <span className="text-xs text-blue-100 font-medium">
                 다음 글 →
               </span>
-              <span
-                style={{
-                  fontSize: '14px',
-                  color: '#191F28',
-                  fontWeight: 600,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  display: '-webkit-box',
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: 'vertical',
-                }}
-              >
+              <span className="text-sm text-white font-semibold line-clamp-2">
                 {nextPost.title}
               </span>
             </Link>
