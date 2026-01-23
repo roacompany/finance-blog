@@ -13,6 +13,7 @@ export interface PostMeta {
   tags: string[];
   series: string;
   views?: number | string;
+  readingTime?: string;
 }
 
 // 조회수를 "10+" / "100+" / "1K+" 형식으로 변환
@@ -38,6 +39,24 @@ export function formatViews(views: number | string | undefined): string | null {
   return null;
 }
 
+// 읽는 시간 계산 (한국어 평균 읽기 속도: 분당 350자)
+export function calculateReadingTime(content: string): string {
+  // 마크다운 문법 제거 (제목, 링크, 코드 블록 등)
+  const plainText = content
+    .replace(/#{1,6}\s/g, '') // 제목
+    .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // 링크
+    .replace(/```[\s\S]*?```/g, '') // 코드 블록
+    .replace(/`[^`]+`/g, '') // 인라인 코드
+    .replace(/[*_~]/g, '') // 강조
+    .replace(/\n+/g, ' ') // 줄바꿈
+    .trim();
+
+  const charCount = plainText.length;
+  const minutes = Math.ceil(charCount / 350);
+
+  return `${minutes}분`;
+}
+
 export interface Post {
   frontmatter: PostMeta;
   content: string;
@@ -54,7 +73,7 @@ export function getAllPosts(): PostMeta[] {
   const posts = mdxFiles.map((fileName) => {
     const filePath = path.join(postsDirectory, fileName);
     const fileContent = fs.readFileSync(filePath, "utf-8");
-    const { data } = matter(fileContent);
+    const { data, content } = matter(fileContent);
 
     return {
       title: data.title || "",
@@ -65,6 +84,7 @@ export function getAllPosts(): PostMeta[] {
       tags: data.tags || [],
       series: data.series || "",
       views: data.views || undefined,
+      readingTime: calculateReadingTime(content),
     } as PostMeta;
   });
 
@@ -98,6 +118,7 @@ export function getPostBySlug(slug: string): Post | null {
           tags: data.tags || [],
           series: data.series || "",
           views: data.views || undefined,
+          readingTime: calculateReadingTime(content),
         },
         content,
       };
