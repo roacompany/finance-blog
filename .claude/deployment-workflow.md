@@ -1,231 +1,175 @@
-# 배포 프로세스 개선안
+# 배포 워크플로우 (확정)
 
-## 현재 문제점
+> **중요**: 이 문서는 finance-blog의 배포 프로세스를 정의합니다. 절대 임의로 변경하지 마세요.
 
-- 커밋 후 즉시 푸시 → Vercel 자동 배포
-- 사용자 확인 없이 배포됨
-- 실수 시 롤백 어려움
+**최종 수정**: 2026-01-23
 
 ---
 
-## 개선된 워크플로우
+## 배포 정의
 
-### Stage 1: 작업 완료 (Local)
+**배포 = GitHub Push + PR 생성 링크 제공**
 
-```
-[작업 진행] → [파일 수정] → [로컬 커밋]
-```
-
-**상태**: 로컬에만 존재, 원격/배포 없음
-
-### Stage 2: 사용자 확인 요청 (Review)
-
-```
-[변경 내역 요약 제시] → [사용자 검토] → [수정 요청 or 승인]
-```
-
-**AI 제공 정보**:
-- 수정된 파일 목록
-- 주요 변경사항 요약
-- 예상 영향 범위
-- 롤백 방법
-
-**사용자 액션**:
-- ✅ 승인: "배포해" → Stage 3로
-- ❌ 수정 요청: "XX 수정해" → Stage 1로
-- 🔍 상세 확인: "XX 파일 보여줘"
-
-### Stage 3: 원격 푸시 (Remote Push)
-
-```
-[git push] → [GitHub에 커밋 반영]
-```
-
-**상태**: GitHub에 반영, Vercel 미배포 (아직)
-
-### Stage 4: Vercel 배포 확인 (Deploy)
-
-```
-[Vercel Preview 링크 제공] → [사용자 Preview 확인] → [Production 배포 승인]
-```
-
-**AI 제공 정보**:
-- Vercel Preview URL
-- 빌드 로그 (에러 있으면)
-- PR 링크
-
-**사용자 액션**:
-- ✅ Production 배포: PR merge
-- ❌ 취소: PR 닫기
+Vercel은 GitHub에 연동되어 있어, GitHub에 변경사항이 반영되면 자동으로 배포됩니다.
 
 ---
 
-## 구현 방법
+## 배포 프로세스 (3단계)
 
-### 방법 A: Git Hook 활용 (추천)
+### 1단계: Git Commit
+```bash
+git add -A
+git commit -m "커밋 메시지"
+```
 
-**장점**: 자동화, 실수 방지
-**구현**: `.claude/pre-push-hook.sh`
+**커밋 메시지 규칙**:
+- `feat:` - 새로운 기능 추가
+- `fix:` - 버그 수정
+- `refactor:` - 코드 리팩토링
+- `docs:` - 문서 수정
+- `style:` - 코드 포맷팅
+
+### 2단계: GitHub Push
+```bash
+git push -u origin <브랜치명>
+```
+
+**브랜치 명명 규칙**:
+- `claude/` 접두사로 시작
+- 세션 ID로 끝나야 함 (예: `claude/treasury-yield-curve-post-Q7ID3`)
+- 403 에러 방지를 위해 필수
+
+### 3단계: PR 생성 링크 제공 ✅ **이것이 배포의 마지막 단계**
+
+**필수 형식**:
+```
+## ✅ PR 생성 링크
+
+👉 [PR 생성하기](https://github.com/roacompany/finance-blog/compare/main...<브랜치명>)
+```
+
+**함께 제공할 정보**:
+- PR 제목 (복사 가능한 형식)
+- PR 본문 (마크다운 형식, 복사 가능)
+
+---
+
+## ❌ 하지 말아야 할 것
+
+1. **`gh pr create` 명령어 사용 금지**
+   - `gh` CLI가 설치되어 있지 않음
+   - 항상 실패함
+
+2. **Vercel 직접 배포 언급 금지**
+   - Vercel은 GitHub에서 자동으로 배포
+   - 사용자가 별도로 Vercel 조작 필요 없음
+
+3. **main 브랜치에 직접 merge 금지**
+   - 항상 PR을 통해야 함
+   - 사용자가 PR을 검토하고 merge
+
+4. **배포 완료 여부 확인 불가**
+   - GitHub push 후 PR 링크 제공이 끝
+   - Vercel 배포 상태는 확인할 수 없음
+
+---
+
+## ✅ 정확한 배포 멘트
+
+**올바른 멘트**:
+```
+✅ GitHub에 push 완료!
+
+**브랜치**: claude/xxx
+**커밋**: abc1234
+
+아래 링크에서 PR을 생성해주세요:
+👉 [PR 생성하기](링크)
+
+**PR 제목**:
+(제목)
+
+**PR 본문**:
+(본문)
+```
+
+**잘못된 멘트** (사용 금지):
+- "Vercel에 배포 중입니다" ❌
+- "배포가 완료되었습니다" ❌ (PR 링크 제공 전)
+- "gh pr create로 PR 생성하겠습니다" ❌
+- "main 브랜치에 merge하겠습니다" ❌
+- "어떤 방식으로 진행할까요?" ❌ (항상 PR 링크만 제공)
+
+---
+
+## 예시: 완벽한 배포 프로세스
 
 ```bash
-#!/bin/bash
-# .claude/pre-push-hook.sh
+# 1. Commit
+git add -A
+git commit -m "feat: 새로운 포스트 추가"
 
-echo "⚠️  배포 전 확인이 필요합니다."
-echo ""
-echo "변경된 파일:"
-git diff --name-only @{u}..HEAD
-echo ""
-echo "계속 푸시하시겠습니까? (y/N)"
-read -r response
+# 2. Push
+git push -u origin claude/new-feature-ABC123
 
-if [[ "$response" != "y" ]]; then
-  echo "❌ 푸시가 취소되었습니다."
-  exit 1
-fi
-
-echo "✅ 푸시를 진행합니다..."
-exit 0
+# 3. PR 링크 제공 (사용자에게)
 ```
 
-**설치**:
-```bash
-ln -s ../../.claude/pre-push-hook.sh .git/hooks/pre-push
-chmod +x .claude/pre-push-hook.sh
+**사용자에게 제공할 메시지**:
 ```
+✅ GitHub에 push 완료!
 
-### 방법 B: AI 프로토콜 변경 (간단)
+**브랜치**: claude/new-feature-ABC123
+**커밋**: abc1234
 
-**AI 행동 원칙**:
-1. 커밋 완료 후 **절대 자동 푸시 금지**
-2. 다음 메시지 출력:
-   ```
-   ✅ 작업 완료 (로컬 커밋)
+아래 링크에서 PR을 생성해주세요:
+👉 [PR 생성하기](https://github.com/roacompany/finance-blog/compare/main...claude/new-feature-ABC123)
 
-   변경 내역:
-   - 파일1: 설명
-   - 파일2: 설명
+**PR 제목**:
+feat: 새로운 포스트 추가
 
-   배포하시겠습니까?
-   - "배포해" 입력 시 푸시 진행
-   - "수정해" 입력 시 추가 작업
-   ```
-3. 사용자 승인 받은 후에만 푸시
-
----
-
-## 단계별 체크리스트
-
-### AI 작업 완료 시
-
-- [ ] 로컬 커밋 완료
-- [ ] 변경 파일 목록 제시
-- [ ] 주요 변경사항 요약
-- [ ] "배포하시겠습니까?" 질문
-- [ ] **사용자 응답 대기**
-
-### 사용자 승인 시
-
-- [ ] git push 실행
-- [ ] PR 링크 제공
-- [ ] Vercel Preview URL 제공 (가능하면)
-- [ ] "Preview 확인 후 merge 해주세요" 안내
-
-### 사용자 수정 요청 시
-
-- [ ] 추가 작업 진행
-- [ ] 기존 커밋에 amend 또는 새 커밋
-- [ ] 다시 승인 요청
-
----
-
-## 예시 대화
-
-### ✅ 올바른 워크플로우
-
-```
-AI: [작업 완료]
-    변경 파일:
-    - app/page.tsx: 메타데이터 추가
-    - lib/content.ts: formatViews 수정
-
-    배포하시겠습니까?
-
-사용자: app/page.tsx 보여줘
-
-AI: [파일 내용 표시]
-
-사용자: 좋아, 배포해
-
-AI: [푸시 실행]
-    PR: https://github.com/...
-    Preview: https://vercel.app/...
-```
-
-### ❌ 잘못된 워크플로우
-
-```
-AI: [작업 완료]
-    [자동 푸시] ← 이러면 안됨!
-    PR: https://github.com/...
+**PR 본문**:
+(마크다운 형식 본문)
 ```
 
 ---
 
-## Vercel 배포 설정
+## Git Push 재시도 규칙
 
-### Production vs Preview
+**네트워크 에러 시에만** 최대 4번 재시도:
+- 1차 실패: 2초 대기 후 재시도
+- 2차 실패: 4초 대기 후 재시도
+- 3차 실패: 8초 대기 후 재시도
+- 4차 실패: 16초 대기 후 재시도
 
-**현재 설정**:
-- `main` 브랜치 → Production 자동 배포
-- `claude/*` 브랜치 → Preview 자동 생성
-
-**권장 설정**:
-- Preview 자동 생성 유지
-- Production은 PR merge 시만 배포
-- Vercel 설정: "Auto-deploy only on main"
-
-### Preview 링크 확인 방법
-
-1. GitHub PR 페이지 접속
-2. "Checks" 탭 확인
-3. Vercel bot 코멘트에서 Preview URL 클릭
+**403 에러 시**:
+- 재시도 하지 않음
+- 브랜치명 확인 (claude/ 접두사, 세션 ID 접미사)
 
 ---
 
-## 롤백 방법
+## 체크리스트
 
-### 1. 푸시 전 (로컬만)
-
-```bash
-git reset --soft HEAD~1  # 커밋 취소, 파일 유지
-git reset --hard HEAD~1  # 커밋 + 파일 모두 취소
-```
-
-### 2. 푸시 후 (원격 반영됨)
-
-```bash
-git revert HEAD          # 되돌리는 새 커밋 생성
-git push
-```
-
-### 3. 배포 후 (Production)
-
-- Vercel 대시보드에서 이전 배포로 롤백
-- 또는 PR revert 후 merge
+배포 전 반드시 확인:
+- [ ] `npm run build` 성공
+- [ ] Git commit 완료
+- [ ] Git push 성공
+- [ ] PR 생성 링크 제공
+- [ ] PR 제목 및 본문 제공
+- [ ] "배포 완료" 멘트는 "GitHub에 push 완료" 의미
 
 ---
 
-## 적용 제안
+## 요약
 
-**즉시 적용 가능 (방법 B)**:
-- AI 행동 원칙만 변경
-- Hook 설치 불필요
-- 바로 효과
+```
+배포 = Git Push + PR 링크 제공
+```
 
-**장기적 권장 (방법 A)**:
-- Git hook 설치
-- 실수 방지 자동화
-- 팀원 추가 시에도 유효
+**이것만 기억하세요**:
+1. Build 성공 확인
+2. Git commit & push
+3. **PR 생성 링크 제공** ← 배포의 마지막 단계
+4. 끝!
 
-어떤 방법을 선호하시나요?
+Vercel은 사용자가 PR을 merge하면 자동으로 배포합니다.
