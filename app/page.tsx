@@ -387,8 +387,71 @@ export default async function Home(props: Props) {
         marginTop: '48px',
         backgroundColor: '#F9FAFB'
       }}>
-        <div style={{ maxWidth: '700px', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ fontSize: '14px', color: '#8B95A1' }}>Financial Tech Blog © 2026</p>
+        <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+          <nav style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '24px',
+            marginBottom: '24px',
+            flexWrap: 'wrap'
+          }}>
+            <Link
+              href="/about"
+              style={{
+                fontSize: '14px',
+                fontWeight: 600,
+                color: '#4E5968',
+                textDecoration: 'none',
+                transition: 'color 0.2s ease'
+              }}
+            >
+              About
+            </Link>
+            <span style={{ color: '#E5E8EB' }}>·</span>
+            <Link
+              href="/privacy"
+              style={{
+                fontSize: '14px',
+                fontWeight: 600,
+                color: '#4E5968',
+                textDecoration: 'none',
+                transition: 'color 0.2s ease'
+              }}
+            >
+              Privacy
+            </Link>
+            <span style={{ color: '#E5E8EB' }}>·</span>
+            <Link
+              href="/contact"
+              style={{
+                fontSize: '14px',
+                fontWeight: 600,
+                color: '#4E5968',
+                textDecoration: 'none',
+                transition: 'color 0.2s ease'
+              }}
+            >
+              Contact
+            </Link>
+          </nav>
+
+          <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+            <p style={{
+              fontSize: '13px',
+              color: '#8B95A1',
+              lineHeight: 1.6,
+              margin: '0 auto',
+              maxWidth: '600px'
+            }}>
+              본 사이트의 모든 정보는 교육 목적으로 제공되며, 투자 권유가 아닙니다.
+            </p>
+          </div>
+
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ fontSize: '14px', color: '#B0B8C1', margin: 0 }}>
+              © 2026 ROA Finance. All rights reserved.
+            </p>
+          </div>
         </div>
       </footer>
     </div>
