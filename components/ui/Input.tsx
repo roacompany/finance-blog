@@ -51,7 +51,7 @@ export function Input({
 }
 
 // Slider Component (계산기용)
-interface SliderProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
+interface SliderProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'onChange' | 'min' | 'max' | 'step' | 'value'> {
   label?: string;
   min: number;
   max: number;
