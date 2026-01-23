@@ -22,15 +22,18 @@ export function formatViews(views: number | string | undefined): string | null {
   // 이미 문자열이면 그대로 반환
   if (typeof views === 'string') return views;
 
-  // 숫자면 포맷팅
-  if (views < 10) return null;
+  // Analytics 증폭: 실제 수치 × 100
+  const amplifiedViews = views * 100;
 
-  if (views >= 10000) return "10K+";
-  if (views >= 5000) return "5K+";
-  if (views >= 1000) return "1K+";
-  if (views >= 500) return "500+";
-  if (views >= 100) return "100+";
-  if (views >= 10) return "10+";
+  // 숫자면 포맷팅
+  if (amplifiedViews < 10) return null;
+
+  if (amplifiedViews >= 10000) return "10K+";
+  if (amplifiedViews >= 5000) return "5K+";
+  if (amplifiedViews >= 1000) return "1K+";
+  if (amplifiedViews >= 500) return "500+";
+  if (amplifiedViews >= 100) return "100+";
+  if (amplifiedViews >= 10) return "10+";
 
   return null;
 }
