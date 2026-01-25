@@ -79,11 +79,11 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           </Link>
 
           <Link
-            href="/?filter=all"
+            href="/calculators"
             onClick={onClose}
             className="block px-4 py-3 text-base font-semibold text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            시리즈
+            계산기
           </Link>
 
           <div className="pt-2 border-t border-gray-200 mt-2">
@@ -92,7 +92,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
               onClick={onClose}
               className="block px-4 py-3 text-base font-semibold text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
             >
-              About
+              소개
             </Link>
 
             <Link
@@ -100,7 +100,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
               onClick={onClose}
               className="block px-4 py-3 text-base font-semibold text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
             >
-              Contact
+              문의
             </Link>
 
             <Link
@@ -108,7 +108,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
               onClick={onClose}
               className="block px-4 py-3 text-base font-semibold text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
             >
-              Privacy
+              개인정보처리방침
             </Link>
           </div>
         </nav>

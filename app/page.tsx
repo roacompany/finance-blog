@@ -189,9 +189,9 @@ export default async function Home(props: Props) {
         <section>
           <h2 className="text-2xl font-bold text-gray-900 mb-8">
             {selectedSeries !== 'all'
-              ? seriesOptions.find((s) => s.id === selectedSeries)?.name || 'Insights'
+              ? seriesOptions.find((s) => s.id === selectedSeries)?.name || '최신 글'
               : selectedCategory === '전체'
-              ? 'Insights'
+              ? '최신 글'
               : selectedCategory}
           </h2>
 
@@ -199,10 +199,9 @@ export default async function Home(props: Props) {
           {filteredPosts.length === 0 ? (
             <div className="py-10">
               <div className="text-center mb-12">
-                <p className="text-gray-500 text-lg mb-2">
-                  아직 작성된 글이 없습니다.
+                <p className="text-gray-500 text-lg">
+                  작성된 글이 없습니다. 추천 글을 확인해보세요.
                 </p>
-                <p className="text-gray-400 text-sm">다른 추천 글을 확인해보세요.</p>
               </div>
 
               {/* Recommended Posts */}

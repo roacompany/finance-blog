@@ -345,8 +345,7 @@ export default function DsrCalculator() {
 
       {/* 안내 문구 */}
       <div className="mt-4 p-3 bg-blue-50 rounded-lg text-sm text-gray-700 leading-relaxed">
-        💡 이 계산기는 참고용이에요. 실제 금융사의 우대금리, 기타 대출 등에 따라 결과가 달라질
-        수 있어요.
+        💡 참고용 계산기입니다. 실제 금융사 조건에 따라 결과가 다를 수 있습니다.
       </div>
     </div>
   );

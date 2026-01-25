@@ -31,22 +31,22 @@ export function Header() {
               홈
             </Link>
             <Link
-              href="/?filter=all"
+              href="/calculators"
               className="text-sm font-semibold text-gray-700 hover:text-blue-600 transition-colors"
             >
-              시리즈
+              계산기
             </Link>
             <Link
               href="/about"
               className="text-sm font-semibold text-gray-700 hover:text-blue-600 transition-colors"
             >
-              About
+              소개
             </Link>
             <Link
               href="/contact"
               className="text-sm font-semibold text-gray-700 hover:text-blue-600 transition-colors"
             >
-              Contact
+              문의
             </Link>
           </div>
 
