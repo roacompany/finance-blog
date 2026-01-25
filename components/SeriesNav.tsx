@@ -66,44 +66,73 @@ export function SeriesNav({ series, currentSlug }: SeriesNavProps) {
 
       {/* Previous/Next Navigation */}
       {(prevPost || nextPost) && (
-        <div
-          className={`
-            grid gap-3 pt-4 border-t border-gray-200
-            ${prevPost && nextPost ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}
-          `}
-        >
-          {prevPost && (
-            <Link
-              href={`/posts/${prevPost.slug}`}
-              className="flex flex-col gap-1 px-4 py-3 bg-white border-2 border-gray-200 rounded-xl
-                         no-underline transition-all duration-200
-                         hover:border-blue-600 hover:bg-blue-50 group"
-            >
-              <span className="text-xs text-gray-500 font-medium group-hover:text-blue-600 transition-colors">
-                ← 이전 글
-              </span>
-              <span className="text-sm text-gray-900 font-semibold line-clamp-2">
-                {prevPost.title}
-              </span>
-            </Link>
-          )}
-
+        <div className="pt-4 border-t border-gray-200 space-y-3">
+          {/* Next Post - Primary CTA */}
           {nextPost && (
             <Link
               href={`/posts/${nextPost.slug}`}
-              className={`
-                flex flex-col gap-1 px-4 py-3 bg-blue-600 rounded-xl
-                no-underline transition-all duration-200
-                hover:bg-blue-700
-                ${!prevPost ? 'text-left' : 'text-right'}
-              `}
+              className="flex items-center justify-between gap-3 px-5 py-4 bg-blue-600 rounded-xl
+                         no-underline transition-all duration-200
+                         hover:bg-blue-700 hover:scale-[1.02] hover:shadow-lg
+                         group"
             >
-              <span className="text-xs text-blue-100 font-medium">
-                다음 글 →
-              </span>
-              <span className="text-sm text-white font-semibold line-clamp-2">
-                {nextPost.title}
-              </span>
+              <div className="flex-1">
+                <div className="text-xs text-blue-100 font-medium mb-1">
+                  다음 글
+                </div>
+                <div className="text-base text-white font-bold line-clamp-2">
+                  {nextPost.title}
+                </div>
+              </div>
+              <div className="flex-shrink-0 text-white opacity-80 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
+                </svg>
+              </div>
+            </Link>
+          )}
+
+          {/* Previous Post - Secondary Link */}
+          {prevPost && (
+            <Link
+              href={`/posts/${prevPost.slug}`}
+              className="flex items-center gap-3 px-4 py-3 bg-white border-2 border-gray-200 rounded-xl
+                         no-underline transition-all duration-200
+                         hover:border-blue-600 hover:bg-blue-50 group"
+            >
+              <div className="flex-shrink-0 text-gray-400 group-hover:text-blue-600 group-hover:-translate-x-1 transition-all">
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M11 17l-5-5m0 0l5-5m-5 5h12"
+                  />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <div className="text-xs text-gray-500 font-medium group-hover:text-blue-600 transition-colors mb-1">
+                  이전 글
+                </div>
+                <div className="text-sm text-gray-900 font-semibold line-clamp-2">
+                  {prevPost.title}
+                </div>
+              </div>
             </Link>
           )}
         </div>

@@ -18,7 +18,7 @@ export function RelatedPosts({ currentPost }: RelatedPostsProps) {
   }
 
   return (
-    <section className="mt-16 pt-12 border-t border-gray-200">
+    <section className="mt-16 -mx-6 md:-mx-8 px-6 md:px-8 py-12 bg-blue-50 rounded-2xl">
       <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900 mb-6">
         <span>🔗</span>
         <span>이 글과 함께 읽으면 좋은 글</span>
