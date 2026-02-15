@@ -152,45 +152,49 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
   return (
     <AuthGuard>
       <AdminNav />
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
+        <div className="mb-4 sm:mb-6">
+          {/* Top row: back + badges */}
+          <div className="flex items-center gap-2 mb-2">
             <Link href="/admin/posts" className="text-sm text-gray-500 hover:text-gray-700">
               ← 목록
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900">포스트 편집</h1>
             {post && (
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusLabels[post.status]?.color}`}>
+              <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${statusLabels[post.status]?.color}`}>
                 {statusLabels[post.status]?.label}
               </span>
             )}
             {post?.auto_generated ? (
-              <span className="px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-purple-100 text-purple-700">
                 AI 생성
               </span>
             ) : null}
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* Title */}
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">포스트 편집</h1>
+
+          {/* Action buttons - full width on mobile */}
+          <div className="flex gap-2">
             {post?.status === 'published' ? (
               <button
                 onClick={handlePublish}
-                className="px-4 py-2 rounded-xl bg-yellow-100 text-yellow-800 text-sm font-semibold hover:bg-yellow-200 transition-colors"
+                className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-yellow-100 text-yellow-800 text-sm font-semibold hover:bg-yellow-200 transition-colors active:scale-[0.98]"
               >
                 비공개 전환
               </button>
             ) : (
               <button
                 onClick={handlePublish}
-                className="px-4 py-2 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors"
+                className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors active:scale-[0.98]"
               >
                 발행 승인
               </button>
             )}
             <button
               onClick={handleDelete}
-              className="px-4 py-2 rounded-xl text-red-500 text-sm font-semibold hover:bg-red-50 transition-colors"
+              className="px-4 py-2.5 rounded-xl text-red-500 text-sm font-semibold hover:bg-red-50 transition-colors active:scale-[0.98]"
             >
               삭제
             </button>
@@ -199,16 +203,16 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
 
         {/* Post Meta Info */}
         {post && (
-          <div className="bg-gray-50 rounded-xl p-4 mb-6 flex flex-wrap gap-4 text-xs text-gray-500">
-            <span>생성: {new Date(post.created_at).toLocaleString('ko-KR')}</span>
-            <span>수정: {new Date(post.updated_at).toLocaleString('ko-KR')}</span>
-            {post.published_at && <span>발행: {new Date(post.published_at).toLocaleString('ko-KR')}</span>}
+          <div className="bg-gray-50 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-4 text-xs text-gray-500">
+            <span>생성: {new Date(post.created_at).toLocaleDateString('ko-KR')}</span>
+            <span>수정: {new Date(post.updated_at).toLocaleDateString('ko-KR')}</span>
+            {post.published_at && <span>발행: {new Date(post.published_at).toLocaleDateString('ko-KR')}</span>}
             <span>조회수: {post.views}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+          <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 space-y-4">
             {/* Title */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">제목</label>
@@ -225,12 +229,12 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">슬러그 (URL)</label>
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-400">/posts/</span>
+                <span className="text-sm text-gray-400 hidden sm:inline">/posts/</span>
                 <input
                   name="slug"
                   value={form.slug}
                   onChange={handleChange}
-                  className="flex-1 px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 min-w-0 px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
@@ -249,7 +253,7 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
             </div>
 
             {/* Date & Base Date */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">발행일</label>
                 <input
@@ -273,7 +277,7 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
             </div>
 
             {/* Tags & Series */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">태그 (쉼표 구분)</label>
                 <input
@@ -312,7 +316,7 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
           </div>
 
           {/* Content Editor */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-6">
+          <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               본문 (MDX)
             </label>
@@ -320,32 +324,32 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
               name="content"
               value={form.content}
               onChange={handleChange}
-              rows={30}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
+              rows={15}
+              className="w-full px-3 sm:px-4 py-3 rounded-xl border border-gray-200 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[300px] sm:min-h-[500px]"
             />
           </div>
 
           {/* Submit */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             <Link
               href={`/posts/${form.slug}`}
               target="_blank"
-              className="text-sm text-gray-500 hover:text-blue-600"
+              className="text-sm text-gray-500 hover:text-blue-600 text-center sm:text-left py-2"
             >
               프론트에서 보기
             </Link>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
               <button
                 type="button"
                 onClick={() => router.back()}
-                className="px-4 py-2.5 rounded-xl bg-gray-100 text-gray-700 text-sm font-semibold hover:bg-gray-200 transition-colors"
+                className="px-4 py-3 sm:py-2.5 rounded-xl bg-gray-100 text-gray-700 text-sm font-semibold hover:bg-gray-200 transition-colors active:scale-[0.98]"
               >
                 취소
               </button>
               <button
                 type="submit"
                 disabled={saving}
-                className="px-6 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50"
+                className="px-6 py-3 sm:py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 active:scale-[0.98]"
               >
                 {saving ? '저장 중...' : '저장'}
               </button>

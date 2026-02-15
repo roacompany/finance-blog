@@ -107,12 +107,12 @@ export default function AdminSettingsPage() {
   return (
     <AuthGuard>
       <AdminNav />
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-8">사이트 설정</h1>
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8">사이트 설정</h1>
 
         {/* Site Settings */}
-        <form onSubmit={handleSave} className="space-y-6 mb-12">
-          <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
+        <form onSubmit={handleSave} className="space-y-4 sm:space-y-6 mb-8 sm:mb-12">
+          <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 space-y-4">
             <h2 className="text-lg font-bold text-gray-900 mb-2">기본 정보</h2>
 
             <div>
@@ -165,8 +165,8 @@ export default function AdminSettingsPage() {
           </div>
 
           {/* Auto Post Settings */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
-            <h2 className="text-lg font-bold text-gray-900 mb-2">자동 포스트 설정</h2>
+          <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 space-y-4">
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-2">자동 포스트 설정</h2>
             <p className="text-sm text-gray-500 -mt-1">Claude Code가 자동으로 포스트를 생성하는 설정입니다.</p>
 
             <div className="flex items-center gap-3">
@@ -207,9 +207,9 @@ export default function AdminSettingsPage() {
         </form>
 
         {/* Password Change */}
-        <form onSubmit={handlePasswordChange} className="space-y-6">
-          <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
-            <h2 className="text-lg font-bold text-gray-900 mb-2">비밀번호 변경</h2>
+        <form onSubmit={handlePasswordChange} className="space-y-4 sm:space-y-6">
+          <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 space-y-4">
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-2">비밀번호 변경</h2>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">현재 비밀번호</label>

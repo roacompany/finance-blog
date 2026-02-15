@@ -214,6 +214,8 @@ export default async function PostPage({ params }: PageProps) {
                         mdxOptions: {
                           remarkPlugins: [remarkGfm],
                         },
+                        parseFrontmatter: false,
+                        blockJS: false,
                       }}
                       components={useMDXComponents({})}
                     />

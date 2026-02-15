@@ -67,13 +67,13 @@ export default function NewPostPage() {
   return (
     <AuthGuard>
       <AdminNav />
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">새 포스트 작성</h1>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="mb-4 sm:mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">새 포스트 작성</h1>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+          <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 space-y-4">
             {/* Title */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">제목</label>
@@ -117,7 +117,7 @@ export default function NewPostPage() {
             </div>
 
             {/* Date & Base Date */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">발행일</label>
                 <input
@@ -141,7 +141,7 @@ export default function NewPostPage() {
             </div>
 
             {/* Tags & Series */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">태그 (쉼표 구분)</label>
                 <input
@@ -181,7 +181,7 @@ export default function NewPostPage() {
           </div>
 
           {/* Content Editor */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-6">
+          <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               본문 (MDX)
             </label>
@@ -189,25 +189,25 @@ export default function NewPostPage() {
               name="content"
               value={form.content}
               onChange={handleChange}
-              rows={25}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
+              rows={15}
+              className="w-full px-3 sm:px-4 py-3 rounded-xl border border-gray-200 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[300px] sm:min-h-[500px]"
               placeholder="## 본문 내용을 작성하세요&#10;&#10;MDX 마크다운 형식으로 작성합니다."
             />
           </div>
 
           {/* Submit */}
-          <div className="flex items-center justify-end gap-3">
+          <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3">
             <button
               type="button"
               onClick={() => router.back()}
-              className="px-4 py-2.5 rounded-xl bg-gray-100 text-gray-700 text-sm font-semibold hover:bg-gray-200 transition-colors"
+              className="px-4 py-3 sm:py-2.5 rounded-xl bg-gray-100 text-gray-700 text-sm font-semibold hover:bg-gray-200 transition-colors active:scale-[0.98]"
             >
               취소
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50"
+              className="px-6 py-3 sm:py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 active:scale-[0.98]"
             >
               {saving ? '저장 중...' : '저장'}
             </button>
