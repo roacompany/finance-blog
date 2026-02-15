@@ -1,0 +1,34 @@
+name: Daily Auto Post
+
+on:
+  schedule:
+    # 매일 새벽 2시 (KST) = 17:00 UTC (전날)
+    - cron: '0 17 * * *'
+  workflow_dispatch: # 수동 실행 가능
+
+jobs:
+  generate-post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate daily post via API
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
+          AUTO_POST_SECRET: ${{ secrets.AUTO_POST_SECRET }}
+        run: |
+          TOPIC_DATE=$(date +%Y-%m-%d)
+          echo "Generating post for ${TOPIC_DATE}"
+
+          curl -X POST "${SITE_URL}/api/auto-post" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${AUTO_POST_SECRET}" \
+            -d '{
+              "title": "일간 금융 인사이트 '"${TOPIC_DATE}"'",
+              "slug": "daily-insight-'"${TOPIC_DATE}"'",
+              "description": "'"${TOPIC_DATE}"' 금융 시장 인사이트와 분석",
+              "content": "## 핵심 요약\n\n> AI가 자동 생성한 초안입니다.\n\n---\n\n관리자 검수 후 발행됩니다.",
+              "date": "'"${TOPIC_DATE}"'",
+              "tags": ["금융", "인사이트"],
+              "series": ""
+            }'
+
+          echo "Post generation request sent."
