@@ -1,8 +1,4 @@
-import fs from "fs";
-import path from "path";
-import matter from "gray-matter";
-
-const postsDirectory = path.join(process.cwd(), "content/posts");
+import { getPublishedPosts, getPublishedPostBySlug, getPublishedSlugs } from './posts-db';
 
 export interface PostMeta {
   title: string;
@@ -47,86 +43,19 @@ export interface Post {
   content: string;
 }
 
+// DB에서 발행된 포스트만 가져오기
 export function getAllPosts(): PostMeta[] {
-  if (!fs.existsSync(postsDirectory)) {
-    return [];
-  }
-
-  const fileNames = fs.readdirSync(postsDirectory);
-  const mdxFiles = fileNames.filter((name) => name.endsWith(".mdx"));
-
-  const posts = mdxFiles.map((fileName) => {
-    const filePath = path.join(postsDirectory, fileName);
-    const fileContent = fs.readFileSync(filePath, "utf-8");
-    const { data, content } = matter(fileContent);
-
-    return {
-      title: data.title || "",
-      slug: data.slug || "",
-      description: data.description || "",
-      date: data.date || "",
-      base_date: data.base_date || "",
-      tags: data.tags || [],
-      series: data.series || "",
-      views: data.views || undefined,
-      readingTime: calculateReadingTime(content),
-    } as PostMeta;
-  });
-
-  // Sort by date descending
-  return posts.sort((a, b) => {
-    return new Date(b.date).getTime() - new Date(a.date).getTime();
-  });
+  return getPublishedPosts();
 }
 
+// DB에서 발행된 포스트를 slug로 가져오기
 export function getPostBySlug(slug: string): Post | null {
-  if (!fs.existsSync(postsDirectory)) {
-    return null;
-  }
-
-  const fileNames = fs.readdirSync(postsDirectory);
-  const mdxFiles = fileNames.filter((name) => name.endsWith(".mdx"));
-
-  for (const fileName of mdxFiles) {
-    const filePath = path.join(postsDirectory, fileName);
-    const fileContent = fs.readFileSync(filePath, "utf-8");
-    const { data, content } = matter(fileContent);
-
-    if (data.slug === slug) {
-      return {
-        frontmatter: {
-          title: data.title || "",
-          slug: data.slug || "",
-          description: data.description || "",
-          date: data.date || "",
-          base_date: data.base_date || "",
-          tags: data.tags || [],
-          series: data.series || "",
-          views: data.views || undefined,
-          readingTime: calculateReadingTime(content),
-        },
-        content,
-      };
-    }
-  }
-
-  return null;
+  return getPublishedPostBySlug(slug);
 }
 
+// DB에서 발행된 포스트의 slug 목록 가져오기
 export function getPostSlugs(): string[] {
-  if (!fs.existsSync(postsDirectory)) {
-    return [];
-  }
-
-  const fileNames = fs.readdirSync(postsDirectory);
-  const mdxFiles = fileNames.filter((name) => name.endsWith(".mdx"));
-
-  return mdxFiles.map((fileName) => {
-    const filePath = path.join(postsDirectory, fileName);
-    const fileContent = fs.readFileSync(filePath, "utf-8");
-    const { data } = matter(fileContent);
-    return data.slug as string;
-  });
+  return getPublishedSlugs();
 }
 
 // 시리즈별 포스트 가져오기 (날짜 오름차순 정렬)
