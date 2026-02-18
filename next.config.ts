@@ -22,6 +22,36 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["react", "react-dom"],
   },
+
+  // 정적 자산 캐싱 헤더
+  async headers() {
+    return [
+      {
+        source: "/og-image.png",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=86400" },
+        ],
+      },
+      {
+        source: "/api/og",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400" },
+        ],
+      },
+      {
+        source: "/:path*.:ext(ico|png|jpg|jpeg|svg|webp|avif)",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=2592000, immutable" },
+        ],
+      },
+      {
+        source: "/sitemap.xml",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=3600, s-maxage=86400" },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

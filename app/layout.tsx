@@ -106,10 +106,17 @@ export default function RootLayout({
         {/* Mobile Optimization */}
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
 
+        {/* DNS Prefetch & Preconnect */}
+        <link rel="dns-prefetch" href="https://www.clarity.ms" />
+        <link rel="preconnect" href="https://www.clarity.ms" crossOrigin="anonymous" />
+
+        {/* Font Preload: 시스템 폰트 사용하므로 별도 웹폰트 불필요 - CLS 없음 */}
+
         {/* Favicon */}
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="theme-color" content="#FFFFFF" />
+        <meta name="color-scheme" content="light" />
       </head>
       <body>
         <Clarity />

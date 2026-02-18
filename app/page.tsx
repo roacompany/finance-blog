@@ -87,12 +87,13 @@ export default async function Home(props: Props) {
 
   const recommendedPosts = filteredPosts.length === 0 ? allPosts.slice(0, 3) : [];
 
-  const jsonLd = {
+  const blogJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Blog',
     name: '금융답게 바라보기, 로아의 시선',
     description: '금융을 금융답게 풀어냅니다.',
     url: BASE_URL,
+    inLanguage: 'ko',
     author: {
       '@type': 'Person',
       name: '로아',
@@ -101,6 +102,10 @@ export default async function Home(props: Props) {
       '@type': 'Organization',
       name: '금융답게 바라보기, 로아의 시선',
       url: BASE_URL,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${BASE_URL}/og-image.png`,
+      },
     },
     blogPost: allPosts.slice(0, 10).map((post) => ({
       '@type': 'BlogPosting',
@@ -108,6 +113,7 @@ export default async function Home(props: Props) {
       description: post.description,
       url: `${BASE_URL}/posts/${post.slug}`,
       datePublished: post.date,
+      image: `${BASE_URL}/api/og?title=${encodeURIComponent(post.title)}`,
       author: {
         '@type': 'Person',
         name: '로아',
@@ -115,11 +121,28 @@ export default async function Home(props: Props) {
     })),
   };
 
+  const websiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: '금융답게 바라보기, 로아의 시선',
+    url: BASE_URL,
+    description: '금융을 금융답게 풀어냅니다.',
+    inLanguage: 'ko',
+    publisher: {
+      '@type': 'Organization',
+      name: '금융답게 바라보기, 로아의 시선',
+    },
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
       />
 
       {/* Page Header */}

@@ -164,12 +164,18 @@ export default function AdminDashboard() {
         {/* Quick Actions */}
         <div className="mt-4 sm:mt-6 bg-white rounded-2xl border border-gray-200 p-4 sm:p-6">
           <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4">빠른 작업</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
             <Link
               href="/admin/posts/new"
               className="flex items-center justify-center px-4 py-3 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors active:scale-[0.98]"
             >
               새 포스트 작성
+            </Link>
+            <Link
+              href="/admin/topics"
+              className="flex items-center justify-center px-4 py-3 rounded-xl bg-indigo-100 text-indigo-800 text-sm font-semibold hover:bg-indigo-200 transition-colors active:scale-[0.98]"
+            >
+              백로그에서 선택
             </Link>
             <Link
               href="/admin/posts?status=pending_review"

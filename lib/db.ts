@@ -80,6 +80,20 @@ async function initializeDb(db: Client) {
     `CREATE INDEX IF NOT EXISTS idx_posts_slug ON posts(slug)`,
     `CREATE INDEX IF NOT EXISTS idx_posts_date ON posts(date DESC)`,
     `CREATE INDEX IF NOT EXISTS idx_posts_series ON posts(series)`,
+    `CREATE TABLE IF NOT EXISTS post_topics (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      description TEXT NOT NULL DEFAULT '',
+      tags TEXT NOT NULL DEFAULT '[]',
+      series TEXT DEFAULT '',
+      priority INTEGER DEFAULT 0,
+      status TEXT NOT NULL DEFAULT 'backlog',
+      notes TEXT DEFAULT '',
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    )`,
+    `CREATE INDEX IF NOT EXISTS idx_topics_status ON post_topics(status)`,
+    `CREATE INDEX IF NOT EXISTS idx_topics_priority ON post_topics(priority DESC)`,
   ], 'write');
 
   // Insert default settings if not exist
@@ -102,6 +116,9 @@ async function initializeDb(db: Client) {
 
   // MDX 파일을 DB로 동기화 (어드민 패널에서 MDX 포스트 표시)
   await syncMdxToDb(db);
+
+  // 기본 토픽 백로그 시딩
+  await seedDefaultTopics(db);
 }
 
 async function syncMdxToDb(db: Client) {
@@ -134,6 +151,41 @@ async function syncMdxToDb(db: Client) {
     }
   } catch (error) {
     console.error('[DB] MDX sync failed (non-critical):', error);
+  }
+}
+
+async function seedDefaultTopics(db: Client) {
+  try {
+    const existing = await db.execute('SELECT COUNT(*) as count FROM post_topics');
+    if (Number(existing.rows[0]?.count ?? 0) > 0) return;
+
+    const { v4: uuidv4 } = await import('uuid');
+    const topics = [
+      { title: '2026 한국은행 기준금리 전망과 투자 전략', tags: ['기준금리', '투자', '한국은행'], series: 'Series 01. 금리·통화정책', priority: 2 },
+      { title: 'COFIX 금리 변동이 내 대출이자에 미치는 영향', tags: ['COFIX', '대출금리', '변동금리'], series: 'Series 01. 금리·통화정책', priority: 1 },
+      { title: '전세자금대출 완벽 가이드: 조건부터 금리 비교까지', tags: ['전세', '대출', '부동산'], series: 'Series 02. 실전 대출 가이드', priority: 2 },
+      { title: '신용대출 vs 담보대출, 나에게 맞는 선택은?', tags: ['신용대출', '담보대출', '대출'], series: 'Series 02. 실전 대출 가이드', priority: 1 },
+      { title: 'ETF 투자 입문: 초보자를 위한 완벽 가이드', tags: ['ETF', '투자', '주식'], series: '', priority: 1 },
+      { title: '채권 투자 기초: 금리와 채권 가격의 관계', tags: ['채권', '금리', '투자'], series: 'Series 01. 금리·통화정책', priority: 0 },
+      { title: '부동산 세금 총정리: 취득세부터 양도세까지', tags: ['부동산', '세금', '양도세'], series: '', priority: 1 },
+      { title: '연말정산 절세 팁: 직장인이 놓치기 쉬운 공제 항목', tags: ['세금', '연말정산', '절약'], series: '', priority: 0 },
+      { title: '적금 vs 예금, 2026년 수익률 비교 분석', tags: ['적금', '예금', '금리'], series: '', priority: 0 },
+      { title: '금리인하 시기, 자산 포트폴리오 리밸런싱 전략', tags: ['금리인하', '투자', '포트폴리오'], series: 'Series 01. 금리·통화정책', priority: 1 },
+      { title: '주택담보대출 갈아타기: 대환대출 체크리스트', tags: ['주담대', '대환대출', '대출'], series: 'Series 02. 실전 대출 가이드', priority: 2 },
+      { title: '스트레스 DSR 3단계, 내 대출한도는 얼마나 줄까?', tags: ['DSR', '대출한도', '스트레스DSR'], series: 'Series 02. 실전 대출 가이드', priority: 1 },
+      { title: '해외 송금 수수료 절약법: 서비스별 비교', tags: ['해외송금', '수수료', '절약'], series: '', priority: 0 },
+      { title: 'ISA 계좌 활용법: 세제혜택 최대화 전략', tags: ['ISA', '절세', '투자'], series: '', priority: 0 },
+      { title: '물가연동채권(TIPS)으로 인플레이션 헤지하기', tags: ['채권', '인플레이션', '투자'], series: '', priority: 0 },
+    ];
+
+    for (const topic of topics) {
+      await db.execute({
+        sql: `INSERT INTO post_topics (id, title, tags, series, priority) VALUES (?, ?, ?, ?, ?)`,
+        args: [uuidv4(), topic.title, JSON.stringify(topic.tags), topic.series, topic.priority],
+      });
+    }
+  } catch (error) {
+    console.error('[DB] Topic seed failed (non-critical):', error);
   }
 }
 
