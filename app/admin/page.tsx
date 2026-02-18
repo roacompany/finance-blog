@@ -34,32 +34,44 @@ export default function AdminDashboard() {
   }, []);
 
   async function fetchData() {
-    const [statsRes, recentRes, pendingRes] = await Promise.all([
-      fetch('/api/admin/stats'),
-      fetch('/api/admin/posts?limit=5'),
-      fetch('/api/admin/posts?status=pending_review&limit=10'),
-    ]);
+    try {
+      const [statsRes, recentRes, pendingRes] = await Promise.all([
+        fetch('/api/admin/stats'),
+        fetch('/api/admin/posts?limit=5'),
+        fetch('/api/admin/posts?status=pending_review&limit=10'),
+      ]);
 
-    if (statsRes.ok) setStats(await statsRes.json());
-    if (recentRes.ok) {
-      const data = await recentRes.json();
-      setRecentPosts(data.posts);
-    }
-    if (pendingRes.ok) {
-      const data = await pendingRes.json();
-      setPendingPosts(data.posts);
+      if (statsRes.ok) setStats(await statsRes.json());
+      if (recentRes.ok) {
+        const data = await recentRes.json();
+        setRecentPosts(data.posts);
+      }
+      if (pendingRes.ok) {
+        const data = await pendingRes.json();
+        setPendingPosts(data.posts);
+      }
+    } catch (error) {
+      console.error('대시보드 데이터 로딩 실패:', error);
     }
   }
 
   async function handlePublish(postId: string) {
-    const res = await fetch(`/api/admin/posts/${postId}/publish`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'publish' }),
-    });
+    try {
+      const res = await fetch(`/api/admin/posts/${postId}/publish`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'publish' }),
+      });
 
-    if (res.ok) {
-      fetchData();
+      if (res.ok) {
+        fetchData();
+      } else {
+        const err = await res.json();
+        alert(err.error || '발행에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('발행 처리 실패:', error);
+      alert('네트워크 오류가 발생했습니다.');
     }
   }
 

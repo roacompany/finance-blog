@@ -54,29 +54,40 @@ export default function TopicsPage() {
   }, [filter]);
 
   async function fetchTopics() {
-    const res = await fetch(`/api/admin/topics?status=${filter}&stats=true`);
-    if (res.ok) {
-      const data = await res.json();
-      setTopics(data.topics);
-      setStats(data.stats);
+    try {
+      const res = await fetch(`/api/admin/topics?status=${filter}&stats=true`);
+      if (res.ok) {
+        const data = await res.json();
+        setTopics(data.topics);
+        setStats(data.stats);
+      }
+    } catch (error) {
+      console.error('토픽 목록 로딩 실패:', error);
     }
   }
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault();
-    const res = await fetch('/api/admin/topics', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ...newTopic,
-        tags: newTopic.tags.split(',').map(t => t.trim()).filter(Boolean),
-        priority: Number(newTopic.priority),
-      }),
-    });
-    if (res.ok) {
-      setShowAdd(false);
-      setNewTopic({ title: '', description: '', tags: '', series: '', priority: 0 });
-      fetchTopics();
+    try {
+      const res = await fetch('/api/admin/topics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...newTopic,
+          tags: newTopic.tags.split(',').map(t => t.trim()).filter(Boolean),
+          priority: Number(newTopic.priority),
+        }),
+      });
+      if (res.ok) {
+        setShowAdd(false);
+        setNewTopic({ title: '', description: '', tags: '', series: '', priority: 0 });
+        fetchTopics();
+      } else {
+        const err = await res.json();
+        alert(err.error || '토픽 추가에 실패했습니다.');
+      }
+    } catch {
+      alert('네트워크 오류가 발생했습니다.');
     }
   }
 
@@ -107,18 +118,34 @@ export default function TopicsPage() {
   }
 
   async function handleStatusChange(topicId: string, status: string) {
-    await fetch(`/api/admin/topics/${topicId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status }),
-    });
-    fetchTopics();
+    try {
+      const res = await fetch(`/api/admin/topics/${topicId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        alert(err.error || '상태 변경에 실패했습니다.');
+      }
+      fetchTopics();
+    } catch {
+      alert('네트워크 오류가 발생했습니다.');
+    }
   }
 
   async function handleDelete(topicId: string) {
     if (!confirm('이 토픽을 삭제하시겠습니까?')) return;
-    await fetch(`/api/admin/topics/${topicId}`, { method: 'DELETE' });
-    fetchTopics();
+    try {
+      const res = await fetch(`/api/admin/topics/${topicId}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const err = await res.json();
+        alert(err.error || '삭제에 실패했습니다.');
+      }
+      fetchTopics();
+    } catch {
+      alert('네트워크 오류가 발생했습니다.');
+    }
   }
 
   return (

@@ -69,6 +69,9 @@ export async function POST(request: NextRequest, context: RouteContext) {
       // 토픽 상태를 completed로 업데이트
       await updateTopic(id, { status: 'completed' });
 
+      // 캐시 갱신 (대시보드에서 승인 대기 목록 즉시 반영)
+      try { revalidatePath('/'); } catch { /* non-critical */ }
+
       return NextResponse.json({
         success: true,
         mode: 'auto',
