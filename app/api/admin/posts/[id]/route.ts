@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
 import { getPostById, updatePost, deletePost } from '@/lib/posts-db';
+import { safeParseTags } from '@/lib/safe-json';
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -23,7 +24,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     return NextResponse.json({
       ...post,
-      tags: JSON.parse(post.tags),
+      tags: safeParseTags(post.tags),
     });
   } catch (error) {
     console.error('Get post error:', error);
@@ -40,7 +41,13 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
 
     const { id } = await params;
-    const body = await request.json();
+
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 });
+    }
 
     const updated = updatePost(id, body);
 
@@ -50,7 +57,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     return NextResponse.json({
       ...updated,
-      tags: JSON.parse(updated.tags),
+      tags: safeParseTags(updated.tags),
     });
   } catch (error) {
     console.error('Update post error:', error);

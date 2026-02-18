@@ -1,9 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { MDXRemote } from "next-mdx-remote/rsc";
-import remarkGfm from "remark-gfm";
 import { getPostBySlug, getPostSlugs, formatViews } from "@/lib/content";
 import { useMDXComponents } from "./mdx-components";
+import { SafeMDXRemote } from "@/components/SafeMDXRemote";
 import { SeriesNav } from "@/components/SeriesNav";
 import { RelatedPosts } from "@/components/RelatedPosts";
 import { ReadingProgress } from "@/components/ReadingProgress";
@@ -25,7 +24,13 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+
+  let post;
+  try {
+    post = getPostBySlug(slug);
+  } catch {
+    return { title: "Error" };
+  }
 
   if (!post) {
     return { title: "Post Not Found" };
@@ -72,7 +77,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function PostPage({ params }: PageProps) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+
+  let post;
+  try {
+    post = getPostBySlug(slug);
+  } catch (error) {
+    console.error(`[PostPage] Failed to load post "${slug}":`, error);
+    notFound();
+  }
 
   if (!post) {
     notFound();
@@ -208,15 +220,8 @@ export default async function PostPage({ params }: PageProps) {
 
                   {/* Post Content */}
                   <div className="prose prose-lg max-w-none">
-                    <MDXRemote
+                    <SafeMDXRemote
                       source={content}
-                      options={{
-                        mdxOptions: {
-                          remarkPlugins: [remarkGfm],
-                        },
-                        parseFrontmatter: false,
-                        blockJS: false,
-                      }}
                       components={useMDXComponents({})}
                     />
                   </div>

@@ -45,17 +45,32 @@ export interface Post {
 
 // DB에서 발행된 포스트만 가져오기
 export function getAllPosts(): PostMeta[] {
-  return getPublishedPosts();
+  try {
+    return getPublishedPosts();
+  } catch (error) {
+    console.error('[content] Failed to get all posts:', error);
+    return [];
+  }
 }
 
 // DB에서 발행된 포스트를 slug로 가져오기
 export function getPostBySlug(slug: string): Post | null {
-  return getPublishedPostBySlug(slug);
+  try {
+    return getPublishedPostBySlug(slug);
+  } catch (error) {
+    console.error(`[content] Failed to get post "${slug}":`, error);
+    return null;
+  }
 }
 
 // DB에서 발행된 포스트의 slug 목록 가져오기
 export function getPostSlugs(): string[] {
-  return getPublishedSlugs();
+  try {
+    return getPublishedSlugs();
+  } catch (error) {
+    console.error('[content] Failed to get post slugs:', error);
+    return [];
+  }
 }
 
 // 시리즈별 포스트 가져오기 (날짜 오름차순 정렬)

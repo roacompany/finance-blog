@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
 import { listPosts, createPost, type PostStatus } from '@/lib/posts-db';
+import { safeParseTags } from '@/lib/safe-json';
 
 // GET /api/admin/posts - List posts
 export async function GET(request: NextRequest) {
@@ -22,7 +23,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       posts: result.posts.map(post => ({
         ...post,
-        tags: JSON.parse(post.tags),
+        tags: safeParseTags(post.tags),
       })),
       total: result.total,
       page,
@@ -43,7 +44,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 });
+    }
     const { title, slug, description, content, date, base_date, tags, series, status } = body;
 
     if (!title || !slug) {
@@ -67,7 +73,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       ...post,
-      tags: JSON.parse(post.tags),
+      tags: safeParseTags(post.tags),
     }, { status: 201 });
   } catch (error) {
     console.error('Create post error:', error);
