@@ -16,7 +16,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
 
     const { id } = await params;
-    const post = getPostById(id);
+    const post = await getPostById(id);
 
     if (!post) {
       return NextResponse.json({ error: '포스트를 찾을 수 없습니다.' }, { status: 404 });
@@ -49,7 +49,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 });
     }
 
-    const updated = updatePost(id, body);
+    const updated = await updatePost(id, body);
 
     if (!updated) {
       return NextResponse.json({ error: '포스트를 찾을 수 없습니다.' }, { status: 404 });
@@ -74,7 +74,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
 
     const { id } = await params;
-    const deleted = deletePost(id);
+    const deleted = await deletePost(id);
 
     if (!deleted) {
       return NextResponse.json({ error: '포스트를 찾을 수 없습니다.' }, { status: 404 });

@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
 
-    const result = listPosts({ status, series, search, page, limit });
+    const result = await listPosts({ status, series, search, page, limit });
 
     return NextResponse.json({
       posts: result.posts.map(post => ({
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const post = createPost({
+    const post = await createPost({
       title,
       slug,
       description: description || '',

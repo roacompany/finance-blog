@@ -1,44 +1,42 @@
-import Database from 'better-sqlite3';
-import path from 'path';
-import fs from 'fs';
+import { createClient, type Client } from '@libsql/client';
 
-const DB_PATH = path.join(process.cwd(), 'data', 'blog.db');
+let client: Client | null = null;
+let initialized = false;
 
-// Ensure data directory exists
-const dataDir = path.dirname(DB_PATH);
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
+function getClient(): Client {
+  if (!client) {
+    const url = process.env.TURSO_DATABASE_URL || process.env.DATABASE_URL;
+    if (!url) {
+      throw new Error('데이터베이스가 설정되지 않았습니다. TURSO_DATABASE_URL 환경변수를 설정하세요.');
+    }
+    client = createClient({
+      url,
+      authToken: process.env.TURSO_AUTH_TOKEN,
+    });
+  }
+  return client;
 }
 
-let db: Database.Database;
-
-export function getDb(): Database.Database {
-  if (!db) {
-    try {
-      db = new Database(DB_PATH);
-      db.pragma('journal_mode = WAL');
-      db.pragma('foreign_keys = ON');
-      initializeDb(db);
-    } catch (error) {
-      console.error('[DB] Failed to initialize database:', error);
-      throw new Error(`Database initialization failed: ${error instanceof Error ? error.message : String(error)}`);
-    }
+export async function getDb(): Promise<Client> {
+  const db = getClient();
+  if (!initialized) {
+    await initializeDb(db);
+    initialized = true;
   }
   return db;
 }
 
-function initializeDb(db: Database.Database) {
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS admin_users (
+async function initializeDb(db: Client) {
+  await db.batch([
+    `CREATE TABLE IF NOT EXISTS admin_users (
       id TEXT PRIMARY KEY,
       username TEXT UNIQUE NOT NULL,
       password_hash TEXT NOT NULL,
       display_name TEXT NOT NULL DEFAULT 'Admin',
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-    );
-
-    CREATE TABLE IF NOT EXISTS posts (
+    )`,
+    `CREATE TABLE IF NOT EXISTS posts (
       id TEXT PRIMARY KEY,
       slug TEXT UNIQUE NOT NULL,
       title TEXT NOT NULL,
@@ -49,24 +47,22 @@ function initializeDb(db: Database.Database) {
       tags TEXT NOT NULL DEFAULT '[]',
       series TEXT DEFAULT '',
       views INTEGER DEFAULT 0,
-      status TEXT NOT NULL DEFAULT 'draft' CHECK(status IN ('draft', 'pending_review', 'published', 'archived')),
+      status TEXT NOT NULL DEFAULT 'draft',
       auto_generated INTEGER DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now')),
       published_at TEXT
-    );
-
-    CREATE TABLE IF NOT EXISTS settings (
+    )`,
+    `CREATE TABLE IF NOT EXISTS settings (
       key TEXT PRIMARY KEY,
       value TEXT NOT NULL,
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-    );
-
-    CREATE INDEX IF NOT EXISTS idx_posts_status ON posts(status);
-    CREATE INDEX IF NOT EXISTS idx_posts_slug ON posts(slug);
-    CREATE INDEX IF NOT EXISTS idx_posts_date ON posts(date DESC);
-    CREATE INDEX IF NOT EXISTS idx_posts_series ON posts(series);
-  `);
+    )`,
+    `CREATE INDEX IF NOT EXISTS idx_posts_status ON posts(status)`,
+    `CREATE INDEX IF NOT EXISTS idx_posts_slug ON posts(slug)`,
+    `CREATE INDEX IF NOT EXISTS idx_posts_date ON posts(date DESC)`,
+    `CREATE INDEX IF NOT EXISTS idx_posts_series ON posts(series)`,
+  ], 'write');
 
   // Insert default settings if not exist
   const defaultSettings = [
@@ -79,12 +75,11 @@ function initializeDb(db: Database.Database) {
     ['posts_per_page', '12'],
   ];
 
-  const insertSetting = db.prepare(
-    'INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)'
-  );
-
   for (const [key, value] of defaultSettings) {
-    insertSetting.run(key, value);
+    await db.execute({
+      sql: 'INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)',
+      args: [key, value],
+    });
   }
 }
 

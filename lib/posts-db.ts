@@ -1,6 +1,7 @@
 import { getDb, parseTags, stringifyTags } from './db';
 import { v4 as uuidv4 } from 'uuid';
 import { calculateReadingTime, type PostMeta, type Post } from './content';
+import type { Row } from '@libsql/client';
 
 export type PostStatus = 'draft' | 'pending_review' | 'published' | 'archived';
 
@@ -35,52 +36,83 @@ export interface PostInput {
   auto_generated?: boolean;
 }
 
+function rowToDbPost(row: Row): DbPost {
+  return {
+    id: String(row.id),
+    slug: String(row.slug),
+    title: String(row.title),
+    description: String(row.description ?? ''),
+    content: String(row.content ?? ''),
+    date: String(row.date),
+    base_date: row.base_date ? String(row.base_date) : null,
+    tags: String(row.tags ?? '[]'),
+    series: String(row.series ?? ''),
+    views: Number(row.views ?? 0),
+    status: String(row.status ?? 'draft') as PostStatus,
+    auto_generated: Number(row.auto_generated ?? 0),
+    created_at: String(row.created_at ?? ''),
+    updated_at: String(row.updated_at ?? ''),
+    published_at: row.published_at ? String(row.published_at) : null,
+  };
+}
+
 // Create a new post
-export function createPost(input: PostInput): DbPost {
-  const db = getDb();
+export async function createPost(input: PostInput): Promise<DbPost> {
+  const db = await getDb();
   const id = uuidv4();
   const now = new Date().toISOString();
 
-  const stmt = db.prepare(`
-    INSERT INTO posts (id, slug, title, description, content, date, base_date, tags, series, status, auto_generated, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
+  await db.execute({
+    sql: `INSERT INTO posts (id, slug, title, description, content, date, base_date, tags, series, status, auto_generated, created_at, updated_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    args: [
+      id,
+      input.slug,
+      input.title,
+      input.description,
+      input.content,
+      input.date,
+      input.base_date || null,
+      stringifyTags(input.tags),
+      input.series || '',
+      input.status || 'draft',
+      input.auto_generated ? 1 : 0,
+      now,
+      now,
+    ],
+  });
 
-  stmt.run(
-    id,
-    input.slug,
-    input.title,
-    input.description,
-    input.content,
-    input.date,
-    input.base_date || null,
-    stringifyTags(input.tags),
-    input.series || '',
-    input.status || 'draft',
-    input.auto_generated ? 1 : 0,
-    now,
-    now
-  );
-
-  return getPostById(id)!;
+  const post = await getPostById(id);
+  if (!post) throw new Error('Failed to create post');
+  return post;
 }
 
 // Get post by ID
-export function getPostById(id: string): DbPost | null {
-  const db = getDb();
-  return db.prepare('SELECT * FROM posts WHERE id = ?').get(id) as DbPost | null;
+export async function getPostById(id: string): Promise<DbPost | null> {
+  const db = await getDb();
+  const result = await db.execute({
+    sql: 'SELECT * FROM posts WHERE id = ?',
+    args: [id],
+  });
+  if (result.rows.length === 0) return null;
+  return rowToDbPost(result.rows[0]);
 }
 
 // Get post by slug
-export function getPostBySlugDb(slug: string): DbPost | null {
-  const db = getDb();
-  return db.prepare('SELECT * FROM posts WHERE slug = ?').get(slug) as DbPost | null;
+export async function getPostBySlugDb(slug: string): Promise<DbPost | null> {
+  const db = await getDb();
+  const result = await db.execute({
+    sql: 'SELECT * FROM posts WHERE slug = ?',
+    args: [slug],
+  });
+  if (result.rows.length === 0) return null;
+  return rowToDbPost(result.rows[0]);
 }
 
 // Update a post
-export function updatePost(id: string, input: Partial<PostInput>): DbPost | null {
-  const db = getDb();
-  const existing = getPostById(id);
+export async function updatePost(id: string, input: Partial<PostInput>): Promise<DbPost | null> {
+  const db = await getDb();
+  const existing = await getPostById(id);
   if (!existing) return null;
 
   const updates: string[] = [];
@@ -107,28 +139,34 @@ export function updatePost(id: string, input: Partial<PostInput>): DbPost | null
   values.push(new Date().toISOString());
   values.push(id);
 
-  db.prepare(`UPDATE posts SET ${updates.join(', ')} WHERE id = ?`).run(...values);
+  await db.execute({
+    sql: `UPDATE posts SET ${updates.join(', ')} WHERE id = ?`,
+    args: values,
+  });
 
   return getPostById(id);
 }
 
 // Delete a post
-export function deletePost(id: string): boolean {
-  const db = getDb();
-  const result = db.prepare('DELETE FROM posts WHERE id = ?').run(id);
-  return result.changes > 0;
+export async function deletePost(id: string): Promise<boolean> {
+  const db = await getDb();
+  const result = await db.execute({
+    sql: 'DELETE FROM posts WHERE id = ?',
+    args: [id],
+  });
+  return (result.rowsAffected ?? 0) > 0;
 }
 
 // List posts with filtering
-export function listPosts(options: {
+export async function listPosts(options: {
   status?: PostStatus | 'all';
   series?: string;
   search?: string;
   page?: number;
   limit?: number;
   orderBy?: string;
-} = {}): { posts: DbPost[]; total: number } {
-  const db = getDb();
+} = {}): Promise<{ posts: DbPost[]; total: number }> {
+  const db = await getDb();
   const {
     status = 'all',
     series,
@@ -159,34 +197,41 @@ export function listPosts(options: {
 
   const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
-  const total = (db.prepare(`SELECT COUNT(*) as count FROM posts ${whereClause}`).get(...params) as { count: number }).count;
+  const countResult = await db.execute({
+    sql: `SELECT COUNT(*) as count FROM posts ${whereClause}`,
+    args: params,
+  });
+  const total = Number(countResult.rows[0]?.count ?? 0);
 
   const offset = (page - 1) * limit;
-  const posts = db.prepare(
-    `SELECT * FROM posts ${whereClause} ORDER BY ${orderBy} LIMIT ? OFFSET ?`
-  ).all(...params, limit, offset) as DbPost[];
+  const postsResult = await db.execute({
+    sql: `SELECT * FROM posts ${whereClause} ORDER BY ${orderBy} LIMIT ? OFFSET ?`,
+    args: [...params, limit, offset],
+  });
 
+  const posts = postsResult.rows.map(rowToDbPost);
   return { posts, total };
 }
 
 // Get published posts (for frontend)
-export function getPublishedPosts(): PostMeta[] {
-  const db = getDb();
-  const posts = db.prepare(
+export async function getPublishedPosts(): Promise<PostMeta[]> {
+  const db = await getDb();
+  const result = await db.execute(
     "SELECT * FROM posts WHERE status = 'published' ORDER BY date DESC"
-  ).all() as DbPost[];
-
-  return posts.map(dbPostToPostMeta);
+  );
+  return result.rows.map(row => dbPostToPostMeta(rowToDbPost(row)));
 }
 
 // Get published post by slug (for frontend)
-export function getPublishedPostBySlug(slug: string): Post | null {
-  const db = getDb();
-  const post = db.prepare(
-    "SELECT * FROM posts WHERE slug = ? AND status = 'published'"
-  ).get(slug) as DbPost | null;
+export async function getPublishedPostBySlug(slug: string): Promise<Post | null> {
+  const db = await getDb();
+  const result = await db.execute({
+    sql: "SELECT * FROM posts WHERE slug = ? AND status = 'published'",
+    args: [slug],
+  });
 
-  if (!post) return null;
+  if (result.rows.length === 0) return null;
+  const post = rowToDbPost(result.rows[0]);
 
   return {
     frontmatter: dbPostToPostMeta(post),
@@ -195,12 +240,12 @@ export function getPublishedPostBySlug(slug: string): Post | null {
 }
 
 // Get all published slugs
-export function getPublishedSlugs(): string[] {
-  const db = getDb();
-  const rows = db.prepare(
+export async function getPublishedSlugs(): Promise<string[]> {
+  const db = await getDb();
+  const result = await db.execute(
     "SELECT slug FROM posts WHERE status = 'published'"
-  ).all() as { slug: string }[];
-  return rows.map(r => r.slug);
+  );
+  return result.rows.map(r => String(r.slug));
 }
 
 // Convert DbPost to PostMeta
@@ -219,16 +264,16 @@ export function dbPostToPostMeta(post: DbPost): PostMeta {
 }
 
 // Get post stats for dashboard
-export function getPostStats(): {
+export async function getPostStats(): Promise<{
   total: number;
   published: number;
   draft: number;
   pending_review: number;
   archived: number;
   auto_generated: number;
-} {
-  const db = getDb();
-  const stats = db.prepare(`
+}> {
+  const db = await getDb();
+  const result = await db.execute(`
     SELECT
       COUNT(*) as total,
       SUM(CASE WHEN status = 'published' THEN 1 ELSE 0 END) as published,
@@ -237,38 +282,44 @@ export function getPostStats(): {
       SUM(CASE WHEN status = 'archived' THEN 1 ELSE 0 END) as archived,
       SUM(CASE WHEN auto_generated = 1 THEN 1 ELSE 0 END) as auto_generated
     FROM posts
-  `).get() as Record<string, number>;
+  `);
 
+  const stats = result.rows[0] || {};
   return {
-    total: stats.total || 0,
-    published: stats.published || 0,
-    draft: stats.draft || 0,
-    pending_review: stats.pending_review || 0,
-    archived: stats.archived || 0,
-    auto_generated: stats.auto_generated || 0,
+    total: Number(stats.total ?? 0),
+    published: Number(stats.published ?? 0),
+    draft: Number(stats.draft ?? 0),
+    pending_review: Number(stats.pending_review ?? 0),
+    archived: Number(stats.archived ?? 0),
+    auto_generated: Number(stats.auto_generated ?? 0),
   };
 }
 
 // Settings helpers
-export function getSetting(key: string): string | null {
-  const db = getDb();
-  const row = db.prepare('SELECT value FROM settings WHERE key = ?').get(key) as { value: string } | undefined;
-  return row?.value ?? null;
+export async function getSetting(key: string): Promise<string | null> {
+  const db = await getDb();
+  const result = await db.execute({
+    sql: 'SELECT value FROM settings WHERE key = ?',
+    args: [key],
+  });
+  if (result.rows.length === 0) return null;
+  return String(result.rows[0].value);
 }
 
-export function setSetting(key: string, value: string): void {
-  const db = getDb();
-  db.prepare(
-    'INSERT OR REPLACE INTO settings (key, value, updated_at) VALUES (?, ?, datetime("now"))'
-  ).run(key, value);
+export async function setSetting(key: string, value: string): Promise<void> {
+  const db = await getDb();
+  await db.execute({
+    sql: 'INSERT OR REPLACE INTO settings (key, value, updated_at) VALUES (?, ?, datetime("now"))',
+    args: [key, value],
+  });
 }
 
-export function getAllSettings(): Record<string, string> {
-  const db = getDb();
-  const rows = db.prepare('SELECT key, value FROM settings').all() as { key: string; value: string }[];
+export async function getAllSettings(): Promise<Record<string, string>> {
+  const db = await getDb();
+  const result = await db.execute('SELECT key, value FROM settings');
   const settings: Record<string, string> = {};
-  for (const row of rows) {
-    settings[row.key] = row.value;
+  for (const row of result.rows) {
+    settings[String(row.key)] = String(row.value);
   }
   return settings;
 }

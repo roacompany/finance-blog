@@ -4,7 +4,7 @@ import { ensureDefaultAdmin } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
-    ensureDefaultAdmin();
+    await ensureDefaultAdmin();
 
     let body;
     try {
