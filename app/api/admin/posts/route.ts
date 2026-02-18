@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getSession } from '@/lib/auth';
 import { listPosts, createPost, type PostStatus } from '@/lib/posts-db';
 import { safeParseTags } from '@/lib/safe-json';
@@ -70,6 +71,17 @@ export async function POST(request: NextRequest) {
       series: series || '',
       status: status || 'draft',
     });
+
+    // 발행 상태로 바로 생성된 경우 프론트엔드 캐시 갱신
+    if (post.status === 'published') {
+      try {
+        revalidatePath('/');
+        revalidatePath(`/posts/${post.slug}`);
+        revalidatePath('/sitemap.xml');
+      } catch (e) {
+        console.error('[CreatePost] revalidatePath failed:', e);
+      }
+    }
 
     return NextResponse.json({
       ...post,

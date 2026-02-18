@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getSession } from '@/lib/auth';
 import { getPostById, updatePost } from '@/lib/posts-db';
 import { safeParseTags } from '@/lib/safe-json';
@@ -48,6 +49,15 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     if (!updated) {
       return NextResponse.json({ error: '포스트 업데이트에 실패했습니다.' }, { status: 500 });
+    }
+
+    // 프론트엔드 캐시 갱신: 홈페이지 + 해당 포스트 페이지 + sitemap
+    try {
+      revalidatePath('/');
+      revalidatePath(`/posts/${updated.slug}`);
+      revalidatePath('/sitemap.xml');
+    } catch (e) {
+      console.error('[Publish] revalidatePath failed (non-critical):', e);
     }
 
     return NextResponse.json({
