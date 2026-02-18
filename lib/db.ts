@@ -15,8 +15,13 @@ function getClient(): Client {
         url,
         authToken: process.env.TURSO_AUTH_TOKEN,
       });
+    } else if (process.env.VERCEL) {
+      // Vercel serverless: /tmp만 쓰기 가능
+      client = createClient({
+        url: 'file:/tmp/blog.db',
+      });
     } else {
-      // 로컬 개발용 파일 DB 폴백
+      // 로컬 개발용 파일 DB
       const dataDir = path.join(process.cwd(), 'data');
       if (!fs.existsSync(dataDir)) {
         fs.mkdirSync(dataDir, { recursive: true });
