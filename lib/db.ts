@@ -99,6 +99,42 @@ async function initializeDb(db: Client) {
       args: [key, value],
     });
   }
+
+  // MDX 파일을 DB로 동기화 (어드민 패널에서 MDX 포스트 표시)
+  await syncMdxToDb(db);
+}
+
+async function syncMdxToDb(db: Client) {
+  try {
+    const { readAllMdxFiles } = await import('./content');
+    const mdxPosts = readAllMdxFiles();
+
+    for (const post of mdxPosts) {
+      const { v4: uuidv4 } = await import('uuid');
+      const now = new Date().toISOString();
+      await db.execute({
+        sql: `INSERT OR IGNORE INTO posts (id, slug, title, description, content, date, base_date, tags, series, views, status, created_at, updated_at, published_at)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'published', ?, ?, ?)`,
+        args: [
+          uuidv4(),
+          post.slug,
+          post.title,
+          post.description,
+          post.content,
+          post.date,
+          post.base_date || null,
+          JSON.stringify(post.tags),
+          post.series || '',
+          typeof post.views === 'number' ? post.views : 0,
+          now,
+          now,
+          now,
+        ],
+      });
+    }
+  } catch (error) {
+    console.error('[DB] MDX sync failed (non-critical):', error);
+  }
 }
 
 // Helper: Parse tags from JSON string
