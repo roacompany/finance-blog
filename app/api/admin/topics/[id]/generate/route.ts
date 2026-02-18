@@ -40,35 +40,18 @@ export async function POST(request: NextRequest, context: RouteContext) {
       .substring(0, 60);
 
     if (mode === 'auto') {
-      // 자동 생성: auto-post API를 내부 호출
-      const autoPostSecret = process.env.AUTO_POST_SECRET || 'auto-post-default-key';
-      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : 'http://localhost:3000';
-
-      const autoRes = await fetch(`${baseUrl}/api/auto-post`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${autoPostSecret}`,
-        },
-        body: JSON.stringify({
-          title: topic.title,
-          slug,
-          description: topic.description || `${topic.title}에 대해 알아봅니다.`,
-          content: generateDraftContent(topic.title, tags),
-          date: new Date().toISOString().split('T')[0],
-          tags,
-          series: topic.series || '',
-        }),
+      // 자동 생성: pending_review 상태로 직접 생성
+      const post = await createPost({
+        title: topic.title,
+        slug,
+        description: topic.description || `${topic.title}에 대해 알아봅니다.`,
+        content: generateDraftContent(topic.title, tags),
+        date: new Date().toISOString().split('T')[0],
+        tags,
+        series: topic.series || '',
+        status: 'pending_review',
+        auto_generated: true,
       });
-
-      if (!autoRes.ok) {
-        const err = await autoRes.json();
-        return NextResponse.json({ error: err.error || '자동 생성 실패' }, { status: 500 });
-      }
-
-      const autoData = await autoRes.json();
 
       // 토픽 상태를 completed로 업데이트
       await updateTopic(id, { status: 'completed' });
@@ -76,7 +59,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
       return NextResponse.json({
         success: true,
         mode: 'auto',
-        post: autoData.post,
+        post: { id: post.id, title: post.title, slug: post.slug, status: post.status },
         topic: topicToJson((await getTopicById(id))!),
       });
     } else {
