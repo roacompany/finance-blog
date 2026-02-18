@@ -10,7 +10,12 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 });
+    }
     const { currentPassword, newPassword } = body;
 
     if (!currentPassword || !newPassword) {
