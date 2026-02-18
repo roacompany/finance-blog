@@ -1,4 +1,6 @@
 import { createClient, type Client } from '@libsql/client';
+import path from 'path';
+import fs from 'fs';
 
 let client: Client | null = null;
 let initialized = false;
@@ -6,13 +8,24 @@ let initialized = false;
 function getClient(): Client {
   if (!client) {
     const url = process.env.TURSO_DATABASE_URL || process.env.DATABASE_URL;
-    if (!url) {
-      throw new Error('데이터베이스가 설정되지 않았습니다. TURSO_DATABASE_URL 환경변수를 설정하세요.');
+
+    if (url) {
+      // 원격 DB (Turso) 또는 명시적 로컬 DB
+      client = createClient({
+        url,
+        authToken: process.env.TURSO_AUTH_TOKEN,
+      });
+    } else {
+      // 로컬 개발용 파일 DB 폴백
+      const dataDir = path.join(process.cwd(), 'data');
+      if (!fs.existsSync(dataDir)) {
+        fs.mkdirSync(dataDir, { recursive: true });
+      }
+      const dbPath = path.join(dataDir, 'blog.db');
+      client = createClient({
+        url: `file:${dbPath}`,
+      });
     }
-    client = createClient({
-      url,
-      authToken: process.env.TURSO_AUTH_TOKEN,
-    });
   }
   return client;
 }
