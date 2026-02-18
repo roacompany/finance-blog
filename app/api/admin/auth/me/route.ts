@@ -9,16 +9,24 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const db = getDb();
-    const user = db
-      .prepare('SELECT id, username, display_name FROM admin_users WHERE id = ?')
-      .get(session.userId) as { id: string; username: string; display_name: string } | undefined;
+    const db = await getDb();
+    const result = await db.execute({
+      sql: 'SELECT id, username, display_name FROM admin_users WHERE id = ?',
+      args: [session.userId],
+    });
 
-    if (!user) {
+    if (result.rows.length === 0) {
       return NextResponse.json({ error: 'User not found' }, { status: 401 });
     }
 
-    return NextResponse.json({ user });
+    const user = result.rows[0];
+    return NextResponse.json({
+      user: {
+        id: String(user.id),
+        username: String(user.username),
+        display_name: String(user.display_name),
+      },
+    });
   } catch {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }

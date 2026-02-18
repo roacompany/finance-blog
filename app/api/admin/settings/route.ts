@@ -10,7 +10,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const settings = getAllSettings();
+    const settings = await getAllSettings();
     return NextResponse.json(settings);
   } catch (error) {
     console.error('Get settings error:', error);
@@ -35,11 +35,11 @@ export async function PUT(request: NextRequest) {
 
     for (const [key, value] of Object.entries(body)) {
       if (typeof value === 'string') {
-        setSetting(key, value);
+        await setSetting(key, value);
       }
     }
 
-    const settings = getAllSettings();
+    const settings = await getAllSettings();
     return NextResponse.json(settings);
   } catch (error) {
     console.error('Update settings error:', error);

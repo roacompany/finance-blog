@@ -32,22 +32,27 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const db = getDb();
-    const user = db
-      .prepare('SELECT id, password_hash FROM admin_users WHERE id = ?')
-      .get(session.userId) as { id: string; password_hash: string } | undefined;
+    const db = await getDb();
+    const result = await db.execute({
+      sql: 'SELECT id, password_hash FROM admin_users WHERE id = ?',
+      args: [session.userId],
+    });
 
-    if (!user) {
+    if (result.rows.length === 0) {
       return NextResponse.json({ error: '사용자를 찾을 수 없습니다.' }, { status: 404 });
     }
 
-    if (!bcrypt.compareSync(currentPassword, user.password_hash)) {
+    const user = result.rows[0];
+
+    if (!bcrypt.compareSync(currentPassword, String(user.password_hash))) {
       return NextResponse.json({ error: '현재 비밀번호가 올바르지 않습니다.' }, { status: 400 });
     }
 
     const newHash = bcrypt.hashSync(newPassword, 12);
-    db.prepare('UPDATE admin_users SET password_hash = ?, updated_at = datetime("now") WHERE id = ?')
-      .run(newHash, user.id);
+    await db.execute({
+      sql: 'UPDATE admin_users SET password_hash = ?, updated_at = datetime("now") WHERE id = ?',
+      args: [newHash, String(user.id)],
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {

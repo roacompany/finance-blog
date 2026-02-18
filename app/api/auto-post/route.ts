@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const post = createPost({
+    const post = await createPost({
       title,
       slug,
       description: description || '',

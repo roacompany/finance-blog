@@ -14,14 +14,15 @@ export async function createAdminUser(
   password: string,
   displayName: string = 'Admin'
 ): Promise<boolean> {
-  const db = getDb();
+  const db = await getDb();
   const hash = bcrypt.hashSync(password, 12);
   const id = uuidv4();
 
   try {
-    db.prepare(
-      'INSERT INTO admin_users (id, username, password_hash, display_name) VALUES (?, ?, ?, ?)'
-    ).run(id, username, hash, displayName);
+    await db.execute({
+      sql: 'INSERT INTO admin_users (id, username, password_hash, display_name) VALUES (?, ?, ?, ?)',
+      args: [id, username, hash, displayName],
+    });
     return true;
   } catch {
     return false;
@@ -32,15 +33,22 @@ export async function verifyCredentials(
   username: string,
   password: string
 ): Promise<{ id: string; username: string; display_name: string } | null> {
-  const db = getDb();
-  const user = db
-    .prepare('SELECT id, username, password_hash, display_name FROM admin_users WHERE username = ?')
-    .get(username) as { id: string; username: string; password_hash: string; display_name: string } | undefined;
+  const db = await getDb();
+  const result = await db.execute({
+    sql: 'SELECT id, username, password_hash, display_name FROM admin_users WHERE username = ?',
+    args: [username],
+  });
 
-  if (!user) return null;
-  if (!bcrypt.compareSync(password, user.password_hash)) return null;
+  if (result.rows.length === 0) return null;
+  const user = result.rows[0];
 
-  return { id: user.id, username: user.username, display_name: user.display_name };
+  if (!bcrypt.compareSync(password, String(user.password_hash))) return null;
+
+  return {
+    id: String(user.id),
+    username: String(user.username),
+    display_name: String(user.display_name),
+  };
 }
 
 export async function createSession(userId: string): Promise<string> {
@@ -98,15 +106,17 @@ export async function requireAuth(): Promise<{ userId: string }> {
 }
 
 // Ensure default admin exists
-export function ensureDefaultAdmin() {
-  const db = getDb();
-  const adminCount = db.prepare('SELECT COUNT(*) as count FROM admin_users').get() as { count: number };
+export async function ensureDefaultAdmin() {
+  const db = await getDb();
+  const result = await db.execute('SELECT COUNT(*) as count FROM admin_users');
+  const count = Number(result.rows[0]?.count ?? 0);
 
-  if (adminCount.count === 0) {
+  if (count === 0) {
     const hash = bcrypt.hashSync('admin1234', 12);
     const id = uuidv4();
-    db.prepare(
-      'INSERT INTO admin_users (id, username, password_hash, display_name) VALUES (?, ?, ?, ?)'
-    ).run(id, 'admin', hash, '관리자');
+    await db.execute({
+      sql: 'INSERT INTO admin_users (id, username, password_hash, display_name) VALUES (?, ?, ?, ?)',
+      args: [id, 'admin', hash, '관리자'],
+    });
   }
 }

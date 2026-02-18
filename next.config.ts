@@ -4,9 +4,6 @@ const nextConfig: NextConfig = {
   // 성능 최적화
   reactStrictMode: true,
 
-  // better-sqlite3를 서버사이드에서 사용하기 위한 설정
-  serverExternalPackages: ['better-sqlite3'],
-
   // 이미지 최적화
   images: {
     formats: ["image/avif", "image/webp"],

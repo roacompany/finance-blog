@@ -26,7 +26,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     const { action } = body; // 'publish' or 'unpublish'
 
-    const post = getPostById(id);
+    const post = await getPostById(id);
     if (!post) {
       return NextResponse.json({ error: '포스트를 찾을 수 없습니다.' }, { status: 404 });
     }
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    const updated = updatePost(id, { status: newStatus });
+    const updated = await updatePost(id, { status: newStatus });
 
     if (!updated) {
       return NextResponse.json({ error: '포스트 업데이트에 실패했습니다.' }, { status: 500 });
