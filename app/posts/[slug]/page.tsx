@@ -38,6 +38,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const { frontmatter } = post;
   const url = `${BASE_URL}/posts/${frontmatter.slug}`;
+  const ogImageUrl = `${BASE_URL}/api/og?title=${encodeURIComponent(frontmatter.title)}&desc=${encodeURIComponent(frontmatter.description)}&tags=${encodeURIComponent(frontmatter.tags.join(','))}`;
 
   return {
     title: frontmatter.title,
@@ -53,10 +54,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: frontmatter.description,
       publishedTime: frontmatter.date,
       modifiedTime: frontmatter.base_date || frontmatter.date,
+      section: frontmatter.series || "금융",
       tags: frontmatter.tags,
       images: [
         {
-          url: "/og-image.png",
+          url: ogImageUrl,
           width: 1200,
           height: 630,
           alt: frontmatter.title,
@@ -67,7 +69,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       card: "summary_large_image",
       title: frontmatter.title,
       description: frontmatter.description,
-      images: ["/og-image.png"],
+      images: [ogImageUrl],
     },
     alternates: {
       canonical: url,
@@ -92,12 +94,16 @@ export default async function PostPage({ params }: PageProps) {
 
   const { frontmatter, content } = post;
 
-  // JSON-LD 구조화 데이터
+  const postUrl = `${BASE_URL}/posts/${frontmatter.slug}`;
+  const ogImageUrl = `${BASE_URL}/api/og?title=${encodeURIComponent(frontmatter.title)}&desc=${encodeURIComponent(frontmatter.description)}&tags=${encodeURIComponent(frontmatter.tags.join(','))}`;
+
+  // JSON-LD 구조화 데이터: Article
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: frontmatter.title,
     description: frontmatter.description,
+    image: ogImageUrl,
     datePublished: frontmatter.date,
     dateModified: frontmatter.base_date || frontmatter.date,
     author: {
@@ -109,22 +115,58 @@ export default async function PostPage({ params }: PageProps) {
       "@type": "Organization",
       name: "금융답게 바라보기, 로아의 시선",
       url: BASE_URL,
+      logo: {
+        "@type": "ImageObject",
+        url: `${BASE_URL}/og-image.png`,
+      },
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `${BASE_URL}/posts/${frontmatter.slug}`,
+      "@id": postUrl,
     },
     keywords: frontmatter.tags.join(", "),
+    wordCount: content.length,
+    articleSection: frontmatter.series || "금융",
+    inLanguage: "ko",
   };
 
-  const postUrl = `${BASE_URL}/posts/${frontmatter.slug}`;
+  // JSON-LD 구조화 데이터: BreadcrumbList
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "홈",
+        item: BASE_URL,
+      },
+      ...(frontmatter.series ? [{
+        "@type": "ListItem",
+        position: 2,
+        name: frontmatter.series,
+        item: `${BASE_URL}/?series=${encodeURIComponent(frontmatter.series)}`,
+      }] : []),
+      {
+        "@type": "ListItem",
+        position: frontmatter.series ? 3 : 2,
+        name: frontmatter.title,
+        item: postUrl,
+      },
+    ],
+  };
 
   return (
     <>
-      {/* JSON-LD */}
+      {/* JSON-LD: Article */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {/* JSON-LD: Breadcrumb */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
 
       {/* Reading Progress Bar */}

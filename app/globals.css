@@ -9,7 +9,18 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Layout Shift 방지 */
-* {
+/* Layout Shift 방지: 주요 컨테이너에만 적용 (전체 적용 시 위치 관련 이슈 발생) */
+article, main, section {
   contain: layout;
+}
+
+/* 스크롤 성능 최적화 */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
