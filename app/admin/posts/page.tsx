@@ -70,18 +70,22 @@ function AdminPostsContent() {
 
   async function fetchPosts() {
     setLoading(true);
-    const params = new URLSearchParams();
-    if (statusFilter !== 'all') params.set('status', statusFilter);
-    if (search) params.set('search', search);
-    params.set('page', String(page));
-    params.set('limit', '15');
+    try {
+      const params = new URLSearchParams();
+      if (statusFilter !== 'all') params.set('status', statusFilter);
+      if (search) params.set('search', search);
+      params.set('page', String(page));
+      params.set('limit', '15');
 
-    const res = await fetch(`/api/admin/posts?${params}`);
-    if (res.ok) {
-      const data = await res.json();
-      setPosts(data.posts);
-      setTotal(data.total);
-      setTotalPages(data.totalPages);
+      const res = await fetch(`/api/admin/posts?${params}`);
+      if (res.ok) {
+        const data = await res.json();
+        setPosts(data.posts);
+        setTotal(data.total);
+        setTotalPages(data.totalPages);
+      }
+    } catch (error) {
+      console.error('포스트 목록 로딩 실패:', error);
     }
     setLoading(false);
   }
@@ -93,19 +97,37 @@ function AdminPostsContent() {
   }
 
   async function handlePublish(postId: string) {
-    const res = await fetch(`/api/admin/posts/${postId}/publish`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'publish' }),
-    });
-    if (res.ok) fetchPosts();
+    try {
+      const res = await fetch(`/api/admin/posts/${postId}/publish`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'publish' }),
+      });
+      if (res.ok) {
+        fetchPosts();
+      } else {
+        const err = await res.json();
+        alert(err.error || '발행에 실패했습니다.');
+      }
+    } catch {
+      alert('네트워크 오류가 발생했습니다.');
+    }
   }
 
   async function handleDelete(postId: string, title: string) {
     if (!confirm(`"${title}" 포스트를 삭제하시겠습니까?`)) return;
 
-    const res = await fetch(`/api/admin/posts/${postId}`, { method: 'DELETE' });
-    if (res.ok) fetchPosts();
+    try {
+      const res = await fetch(`/api/admin/posts/${postId}`, { method: 'DELETE' });
+      if (res.ok) {
+        fetchPosts();
+      } else {
+        const err = await res.json();
+        alert(err.error || '삭제에 실패했습니다.');
+      }
+    } catch {
+      alert('네트워크 오류가 발생했습니다.');
+    }
   }
 
   return (
