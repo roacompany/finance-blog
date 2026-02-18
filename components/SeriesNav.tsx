@@ -11,8 +11,8 @@ interface SeriesNavProps {
  * 토스 스타일의 시리즈 네비게이션
  * Design System 적용으로 인라인 스타일 제거
  */
-export function SeriesNav({ series, currentSlug }: SeriesNavProps) {
-  const seriesPosts = getPostsBySeries(series);
+export async function SeriesNav({ series, currentSlug }: SeriesNavProps) {
+  const seriesPosts = await getPostsBySeries(series);
 
   if (seriesPosts.length <= 1) {
     return null;

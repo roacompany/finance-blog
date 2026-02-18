@@ -10,8 +10,8 @@ interface RelatedPostsProps {
  * 관련 포스트 추천 섹션
  * PostCard 재사용으로 디자인 일관성 확보
  */
-export function RelatedPosts({ currentPost }: RelatedPostsProps) {
-  const relatedPosts = getRelatedPosts(currentPost, 3);
+export async function RelatedPosts({ currentPost }: RelatedPostsProps) {
+  const relatedPosts = await getRelatedPosts(currentPost, 3);
 
   if (relatedPosts.length === 0) {
     return null;

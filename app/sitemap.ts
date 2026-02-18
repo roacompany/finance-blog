@@ -3,8 +3,8 @@ import { getAllPosts } from "@/lib/content";
 
 const BASE_URL = "https://www.roafinance.me";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const posts = getAllPosts();
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const posts = await getAllPosts();
 
   const postUrls = posts.map((post) => ({
     url: `${BASE_URL}/posts/${post.slug}`,

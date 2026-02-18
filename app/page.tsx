@@ -72,7 +72,7 @@ export default async function Home(props: Props) {
   const selectedSeries =
     typeof searchParams.series === 'string' ? searchParams.series : 'all';
 
-  const allPosts = getAllPosts().sort(
+  const allPosts = (await getAllPosts()).sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 

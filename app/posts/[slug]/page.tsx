@@ -18,7 +18,7 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  const slugs = getPostSlugs();
+  const slugs = await getPostSlugs();
   return slugs.map((slug) => ({ slug }));
 }
 
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   let post;
   try {
-    post = getPostBySlug(slug);
+    post = await getPostBySlug(slug);
   } catch {
     return { title: "Error" };
   }
@@ -80,7 +80,7 @@ export default async function PostPage({ params }: PageProps) {
 
   let post;
   try {
-    post = getPostBySlug(slug);
+    post = await getPostBySlug(slug);
   } catch (error) {
     console.error(`[PostPage] Failed to load post "${slug}":`, error);
     notFound();
