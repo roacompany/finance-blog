@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { createPost } from '@/lib/posts-db';
 
 /**
@@ -60,6 +61,9 @@ export async function POST(request: NextRequest) {
       status: 'pending_review',
       auto_generated: true,
     });
+
+    // 캐시 갱신 (승인 대기지만 대시보드 등에서 바로 보이도록)
+    try { revalidatePath('/'); } catch { /* non-critical */ }
 
     return NextResponse.json({
       success: true,

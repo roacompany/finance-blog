@@ -124,7 +124,8 @@ async function getDbPublishedPosts(): Promise<PostMeta[]> {
   try {
     const { getPublishedPosts } = await import('./posts-db');
     return await getPublishedPosts();
-  } catch {
+  } catch (error) {
+    console.error('[content] DB 발행 포스트 조회 실패:', error);
     return [];
   }
 }
@@ -133,7 +134,8 @@ async function getDbPublishedPostBySlug(slug: string): Promise<Post | null> {
   try {
     const { getPublishedPostBySlug } = await import('./posts-db');
     return await getPublishedPostBySlug(slug);
-  } catch {
+  } catch (error) {
+    console.error(`[content] DB 포스트 조회 실패 (${slug}):`, error);
     return null;
   }
 }
@@ -142,7 +144,8 @@ async function getDbPublishedSlugs(): Promise<string[]> {
   try {
     const { getPublishedSlugs } = await import('./posts-db');
     return await getPublishedSlugs();
-  } catch {
+  } catch (error) {
+    console.error('[content] DB slug 목록 조회 실패:', error);
     return [];
   }
 }

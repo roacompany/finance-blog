@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { requireAuth } from '@/lib/auth';
 import { getTopicById, updateTopic, topicToJson } from '@/lib/topics-db';
-import { createPost } from '@/lib/posts-db';
+import { createPost, getPostBySlugDb } from '@/lib/posts-db';
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -32,12 +33,24 @@ export async function POST(request: NextRequest, context: RouteContext) {
     const mode = body.mode || 'draft'; // 'draft' or 'auto'
 
     const tags = JSON.parse(topic.tags || '[]');
-    const slug = topic.title
+
+    // slug 생성 + 충돌 방지
+    const baseSlug = topic.title
       .toLowerCase()
       .replace(/[^a-z0-9가-힣\s-]/g, '')
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
       .substring(0, 60);
+
+    let slug = baseSlug;
+    let suffix = 1;
+    while (await getPostBySlugDb(slug)) {
+      slug = `${baseSlug}-${suffix}`;
+      suffix++;
+      if (suffix > 20) {
+        return NextResponse.json({ error: '슬러그를 생성할 수 없습니다. 제목을 변경해주세요.' }, { status: 409 });
+      }
+    }
 
     if (mode === 'auto') {
       // 자동 생성: pending_review 상태로 직접 생성
@@ -78,6 +91,9 @@ export async function POST(request: NextRequest, context: RouteContext) {
       // 토픽 상태를 in_progress로 업데이트
       await updateTopic(id, { status: 'in_progress' });
 
+      // 캐시 갱신
+      try { revalidatePath('/'); } catch { /* non-critical */ }
+
       return NextResponse.json({
         success: true,
         mode: 'draft',
@@ -87,7 +103,8 @@ export async function POST(request: NextRequest, context: RouteContext) {
     }
   } catch (error) {
     console.error('Generate from topic error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Internal server error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 

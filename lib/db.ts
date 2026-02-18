@@ -16,7 +16,8 @@ function getClient(): Client {
         authToken: process.env.TURSO_AUTH_TOKEN,
       });
     } else if (process.env.VERCEL) {
-      // Vercel serverless: /tmp만 쓰기 가능
+      // Vercel serverless: /tmp만 쓰기 가능 (휘발성 - 재배포/콜드스타트 시 초기화됨)
+      console.warn('[DB] ⚠️ Vercel 환경에서 /tmp DB 사용 중. 데이터가 재배포 시 초기화됩니다. 영구 저장을 위해 TURSO_DATABASE_URL 환경변수를 설정하세요.');
       client = createClient({
         url: 'file:/tmp/blog.db',
       });
@@ -129,25 +130,52 @@ async function syncMdxToDb(db: Client) {
     for (const post of mdxPosts) {
       const { v4: uuidv4 } = await import('uuid');
       const now = new Date().toISOString();
-      await db.execute({
-        sql: `INSERT OR IGNORE INTO posts (id, slug, title, description, content, date, base_date, tags, series, views, status, created_at, updated_at, published_at)
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'published', ?, ?, ?)`,
-        args: [
-          uuidv4(),
-          post.slug,
-          post.title,
-          post.description,
-          post.content,
-          post.date,
-          post.base_date || null,
-          JSON.stringify(post.tags),
-          post.series || '',
-          typeof post.views === 'number' ? post.views : 0,
-          now,
-          now,
-          now,
-        ],
+
+      // slug 기준으로 이미 존재하면 내용 업데이트, 없으면 새로 삽입
+      const existing = await db.execute({
+        sql: 'SELECT id FROM posts WHERE slug = ?',
+        args: [post.slug],
       });
+
+      if (existing.rows.length > 0) {
+        // 기존 포스트 업데이트 (status, views 등 사용자 데이터는 보존)
+        await db.execute({
+          sql: `UPDATE posts SET title = ?, description = ?, content = ?, date = ?, base_date = ?, tags = ?, series = ?, updated_at = ?
+                WHERE slug = ?`,
+          args: [
+            post.title,
+            post.description,
+            post.content,
+            post.date,
+            post.base_date || null,
+            JSON.stringify(post.tags),
+            post.series || '',
+            now,
+            post.slug,
+          ],
+        });
+      } else {
+        // 새 포스트 삽입
+        await db.execute({
+          sql: `INSERT INTO posts (id, slug, title, description, content, date, base_date, tags, series, views, status, created_at, updated_at, published_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'published', ?, ?, ?)`,
+          args: [
+            uuidv4(),
+            post.slug,
+            post.title,
+            post.description,
+            post.content,
+            post.date,
+            post.base_date || null,
+            JSON.stringify(post.tags),
+            post.series || '',
+            typeof post.views === 'number' ? post.views : 0,
+            now,
+            now,
+            now,
+          ],
+        });
+      }
     }
   } catch (error) {
     console.error('[DB] MDX sync failed (non-critical):', error);
