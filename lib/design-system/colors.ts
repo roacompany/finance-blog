@@ -48,29 +48,7 @@ export const colors = {
     fall: '#3182F6',       // 하락 (파랑)
   },
 
-  // Gradient Tags (기존 태그 색상 유지)
-  gradients: {
-    기초: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    금리: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-    '통화정책': 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-    대출: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-    투자: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-    부동산: 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
-    채권: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
-    주식: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
-    경제지표: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
-  },
 } as const;
-
-// Gradient helper function
-export function getTagGradient(tags: string[]): string {
-  if (tags.length === 0) {
-    return colors.gradients['기초'];
-  }
-
-  const firstTag = tags[0];
-  return colors.gradients[firstTag as keyof typeof colors.gradients] || colors.gradients['기초'];
-}
 
 // Badge variant colors
 export function getBadgeColor(tag: string): { bg: string; text: string } {

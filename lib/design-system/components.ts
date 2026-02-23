@@ -4,24 +4,6 @@
  */
 
 export const componentStyles = {
-  // Card
-  card: {
-    base: 'rounded-2xl bg-white border border-gray-200 transition-all duration-300',
-    hover: 'hover:-translate-y-2 hover:shadow-xl',
-    shadow: {
-      none: '',
-      sm: 'shadow-sm',
-      md: 'shadow-md',
-      lg: 'shadow-lg',
-      xl: 'shadow-xl',
-    },
-    padding: {
-      sm: 'p-4',
-      md: 'p-6',
-      lg: 'p-8',
-    },
-  },
-
   // Button
   button: {
     base: 'rounded-xl font-semibold transition-all duration-200 inline-flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed',
@@ -88,32 +70,11 @@ export const componentStyles = {
     vertical: 'border-l border-gray-200',
   },
 
-  // Gradient Banner (PostCard용)
-  gradientBanner: {
-    base: 'h-[180px] relative overflow-hidden',
-    overlay: 'absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300',
-  },
 } as const;
 
 // Helper: Combine classes
 export function cn(...classes: (string | undefined | false)[]): string {
   return classes.filter(Boolean).join(' ');
-}
-
-// Helper: Get card classes
-export function getCardClasses(options?: {
-  hover?: boolean;
-  shadow?: keyof typeof componentStyles.card.shadow;
-  padding?: keyof typeof componentStyles.card.padding;
-}): string {
-  const { hover = true, shadow = 'none', padding = 'md' } = options || {};
-
-  return cn(
-    componentStyles.card.base,
-    hover && componentStyles.card.hover,
-    componentStyles.card.shadow[shadow],
-    componentStyles.card.padding[padding]
-  );
 }
 
 // Helper: Get button classes
