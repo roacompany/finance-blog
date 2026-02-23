@@ -17,14 +17,15 @@
 
 ## High Priority
 
-- [ ] **네비게이션 링크 수정** — `Header.tsx`
+- [x] **네비게이션 링크 수정** — `Footer.tsx`
   - `/?filter=all` → `/` (미사용 파라미터 제거)
 
-- [ ] **영어 → 한글 통일** — `Header.tsx`, `page.tsx`
-  - "About"→"소개", "Contact"→"문의", "Insights"→"최신 글"
+- [x] **영어 → 한글 통일** — `Footer.tsx`
+  - "About"→"소개", "Contact"→"문의", "Privacy"→"개인정보처리방침"
+  - Header.tsx, MobileMenu.tsx는 이미 한글 사용 중
 
-- [ ] **계산기 안내 문구 간소화** — `LoanCalculator.tsx`, `DsrCalculator.tsx`
-  - 장황한 구어체 → 토스 스타일 간결 문체
+- [x] **계산기 안내 문구 간소화** — `LoanCalculator.tsx`, `DsrCalculator.tsx`
+  - `-ㅂ니다` 문체 → 토스 스타일 `-요` 간결 문체
 
 ## Medium Priority
 

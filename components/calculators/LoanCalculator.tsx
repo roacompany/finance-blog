@@ -199,7 +199,7 @@ export default function LoanCalculator() {
 
       {/* 안내 문구 */}
       <div className="mt-4 p-3 bg-blue-50 rounded-lg text-sm text-gray-700 leading-relaxed">
-        💡 참고용 계산기입니다. 실제 금융사 조건에 따라 결과가 다를 수 있습니다.
+        💡 참고용이에요. 실제 조건에 따라 달라질 수 있어요.
       </div>
     </div>
   );
