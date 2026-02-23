@@ -1,88 +1,69 @@
+import Link from 'next/link';
 import type { PostMeta } from '@/lib/content';
 import { formatViews } from '@/lib/utils';
-import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import { getTagGradient } from '@/lib/design-system';
 
 interface PostCardProps {
   post: PostMeta;
 }
 
-/**
- * PostCard Component
- * 토스 스타일의 블로그 포스트 카드
- * Design System 적용으로 인라인 스타일 제거
- */
 export default function PostCard({ post }: PostCardProps) {
+  const ogUrl = `/api/og?title=${encodeURIComponent(post.title)}&tags=${post.tags.join(',')}`;
+
   return (
-    <Card
+    <Link
       href={`/posts/${post.slug}`}
-      className="h-full overflow-hidden flex flex-col"
+      className="group block"
       role="article"
       aria-label={post.title}
     >
-      {/* Gradient Banner */}
-      <div
-        className="h-[180px] relative"
-        style={{ background: getTagGradient(post.tags) }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      {/* Thumbnail — OG image, aspect-[4/3], hover scale */}
+      <div className="overflow-hidden rounded-[10px]">
+        <img
+          src={ogUrl}
+          alt={post.title}
+          className="w-full aspect-[4/3] object-cover transition-transform duration-200 ease-in-out group-hover:scale-105"
+          loading="lazy"
+        />
       </div>
 
-      {/* Card Content */}
-      <div className="p-6 flex-1 flex flex-col">
-        {/* Tags */}
-        <div className="flex gap-2 mb-3">
-          {post.tags.slice(0, 2).map((tag) => (
-            <Badge key={tag} tag={tag} size="sm">
-              {tag}
-            </Badge>
-          ))}
-        </div>
-
-        {/* Title */}
-        <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 leading-snug">
-          {post.title}
-        </h3>
-
-        {/* Description */}
-        <p className="text-sm text-gray-600 mb-4 line-clamp-2 flex-1">
-          {post.description}
-        </p>
-
-        {/* Metadata */}
-        <div className="flex items-center gap-2 text-xs text-gray-500 flex-wrap">
-          <time dateTime={post.date}>{post.date}</time>
-
-          {post.readingTime && (
-            <>
-              <span className="text-gray-300">·</span>
-              <span>{post.readingTime}</span>
-            </>
-          )}
-
-          {formatViews(post.views) && (
-            <>
-              <span className="text-gray-300">·</span>
-              <span className="inline-flex items-center gap-1">
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  className="flex-shrink-0"
-                >
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
-                {formatViews(post.views)}
-              </span>
-            </>
-          )}
-        </div>
+      {/* Tags */}
+      <div className="flex gap-2 mt-4">
+        {post.tags.slice(0, 2).map((tag, i) => (
+          <Badge key={`${tag}-${i}`} tag={tag} size="sm">
+            {tag}
+          </Badge>
+        ))}
       </div>
-    </Card>
+
+      {/* Title */}
+      <h3 className="mt-2 text-[22px] font-bold leading-[1.5] text-gray-900 line-clamp-2 group-hover:text-blue-500 transition-colors duration-200">
+        {post.title}
+      </h3>
+
+      {/* Description */}
+      <p className="mt-2 text-[17px] leading-[1.6] text-gray-600 line-clamp-2">
+        {post.description}
+      </p>
+
+      {/* Metadata */}
+      <div className="mt-3 flex items-center gap-2 text-[15px] text-gray-400">
+        <time dateTime={post.date}>{post.date}</time>
+
+        {post.readingTime && (
+          <>
+            <span>·</span>
+            <span>{post.readingTime}</span>
+          </>
+        )}
+
+        {formatViews(post.views) && (
+          <>
+            <span>·</span>
+            <span>{formatViews(post.views)}</span>
+          </>
+        )}
+      </div>
+    </Link>
   );
 }
