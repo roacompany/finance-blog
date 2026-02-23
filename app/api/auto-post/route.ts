@@ -28,7 +28,12 @@ export async function POST(request: NextRequest) {
   try {
     // API key 검증
     const authHeader = request.headers.get('authorization');
-    const apiSecret = process.env.AUTO_POST_SECRET || 'auto-post-default-key';
+    const apiSecret = process.env.AUTO_POST_SECRET;
+
+    if (!apiSecret) {
+      console.warn('[auto-post] ⚠️ AUTO_POST_SECRET 환경변수가 설정되지 않았습니다. .env.example을 확인하세요.');
+      return NextResponse.json({ error: 'AUTO_POST_SECRET not configured' }, { status: 500 });
+    }
 
     if (authHeader !== `Bearer ${apiSecret}`) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

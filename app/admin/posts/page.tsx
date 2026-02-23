@@ -5,6 +5,11 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import AdminNav from '../components/AdminNav';
 import AuthGuard from '../components/AuthGuard';
+import EmptyState from '../components/EmptyState';
+import { PostsListSkeleton } from '../components/skeletons';
+import { postStatusLabels, postStatusFilters } from '@/lib/admin-constants';
+import { useToast } from '@/components/ui/Toast';
+import { useConfirm } from '../components/ConfirmProvider';
 
 interface PostItem {
   id: string;
@@ -21,29 +26,12 @@ interface PostItem {
   updated_at: string;
 }
 
-const statusFilters = [
-  { value: 'all', label: '전체' },
-  { value: 'published', label: '발행됨' },
-  { value: 'pending_review', label: '대기' },
-  { value: 'draft', label: '임시저장' },
-  { value: 'archived', label: '보관' },
-];
-
-const statusLabels: Record<string, { label: string; color: string }> = {
-  published: { label: '발행됨', color: 'bg-green-100 text-green-700' },
-  draft: { label: '임시저장', color: 'bg-gray-100 text-gray-700' },
-  pending_review: { label: '승인 대기', color: 'bg-yellow-100 text-yellow-700' },
-  archived: { label: '보관됨', color: 'bg-red-100 text-red-700' },
-};
-
 export default function AdminPostsPage() {
   return (
     <Suspense fallback={
       <AuthGuard>
         <AdminNav />
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
-        </div>
+        <PostsListSkeleton />
       </AuthGuard>
     }>
       <AdminPostsContent />
@@ -54,6 +42,8 @@ export default function AdminPostsPage() {
 function AdminPostsContent() {
   const searchParams = useSearchParams();
   const initialStatus = searchParams.get('status') || 'all';
+  const toast = useToast();
+  const confirm = useConfirm();
 
   const [posts, setPosts] = useState<PostItem[]>([]);
   const [total, setTotal] = useState(0);
@@ -104,29 +94,37 @@ function AdminPostsContent() {
         body: JSON.stringify({ action: 'publish' }),
       });
       if (res.ok) {
+        toast.success('포스트가 발행되었습니다.');
         fetchPosts();
       } else {
         const err = await res.json();
-        alert(err.error || '발행에 실패했습니다.');
+        toast.error(err.error || '발행에 실패했습니다.');
       }
     } catch {
-      alert('네트워크 오류가 발생했습니다.');
+      toast.error('네트워크 오류가 발생했습니다.');
     }
   }
 
   async function handleDelete(postId: string, title: string) {
-    if (!confirm(`"${title}" 포스트를 삭제하시겠습니까?`)) return;
+    const ok = await confirm({
+      title: '포스트 삭제',
+      message: `"${title}" 포스트를 삭제하시겠습니까?`,
+      confirmText: '삭제',
+      variant: 'danger',
+    });
+    if (!ok) return;
 
     try {
       const res = await fetch(`/api/admin/posts/${postId}`, { method: 'DELETE' });
       if (res.ok) {
+        toast.success('포스트가 삭제되었습니다.');
         fetchPosts();
       } else {
         const err = await res.json();
-        alert(err.error || '삭제에 실패했습니다.');
+        toast.error(err.error || '삭제에 실패했습니다.');
       }
     } catch {
-      alert('네트워크 오류가 발생했습니다.');
+      toast.error('네트워크 오류가 발생했습니다.');
     }
   }
 
@@ -153,7 +151,7 @@ function AdminPostsContent() {
           <div className="flex flex-col gap-3">
             {/* Status Filter - scrollable on mobile */}
             <div className="flex gap-1.5 overflow-x-auto pb-1 -mx-1 px-1">
-              {statusFilters.map((filter) => (
+              {postStatusFilters.map((filter) => (
                 <button
                   key={filter.value}
                   onClick={() => { setStatusFilter(filter.value); setPage(1); }}
@@ -195,9 +193,12 @@ function AdminPostsContent() {
               <p className="text-sm text-gray-500">로딩 중...</p>
             </div>
           ) : posts.length === 0 ? (
-            <div className="py-16 text-center">
-              <p className="text-gray-400">포스트가 없습니다.</p>
-            </div>
+            <EmptyState
+              icon="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              title="포스트가 없습니다"
+              description="새 포스트를 작성하거나 백로그에서 토픽을 선택해보세요."
+              action={{ label: '새 포스트 작성', href: '/admin/posts/new' }}
+            />
           ) : (
             <>
               {/* Desktop Table */}
@@ -230,8 +231,8 @@ function AdminPostsContent() {
                           <span className="text-xs text-gray-500">{post.series || '-'}</span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${statusLabels[post.status]?.color || 'bg-gray-100'}`}>
-                            {statusLabels[post.status]?.label || post.status}
+                          <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${postStatusLabels[post.status]?.color || 'bg-gray-100'}`}>
+                            {postStatusLabels[post.status]?.label || post.status}
                           </span>
                         </td>
                         <td className="px-6 py-4">
@@ -277,8 +278,8 @@ function AdminPostsContent() {
                           {post.title}
                         </p>
                       </Link>
-                      <span className={`flex-shrink-0 px-2 py-0.5 rounded-full text-[10px] font-medium ${statusLabels[post.status]?.color || 'bg-gray-100'}`}>
-                        {statusLabels[post.status]?.label || post.status}
+                      <span className={`flex-shrink-0 px-2 py-0.5 rounded-full text-[10px] font-medium ${postStatusLabels[post.status]?.color || 'bg-gray-100'}`}>
+                        {postStatusLabels[post.status]?.label || post.status}
                       </span>
                     </div>
 

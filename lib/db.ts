@@ -103,8 +103,6 @@ async function initializeDb(db: Client) {
     ['site_description', '금융을 금융답게 풀어냅니다.'],
     ['site_url', 'https://www.roafinance.me'],
     ['author_name', '로아'],
-    ['auto_post_enabled', 'true'],
-    ['auto_post_time', '02:00'],
     ['posts_per_page', '12'],
   ];
 

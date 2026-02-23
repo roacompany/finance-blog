@@ -5,6 +5,10 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import AdminNav from '../../components/AdminNav';
 import AuthGuard from '../../components/AuthGuard';
+import { PostEditSkeleton } from '../../components/skeletons';
+import { postStatusLabels } from '@/lib/admin-constants';
+import { useToast } from '@/components/ui/Toast';
+import { useConfirm } from '../../components/ConfirmProvider';
 
 interface PostData {
   id: string;
@@ -27,6 +31,8 @@ interface PostData {
 export default function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
+  const toast = useToast();
+  const confirm = useConfirm();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [post, setPost] = useState<PostData | null>(null);
@@ -91,13 +97,13 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
       if (res.ok) {
         const data = await res.json();
         setPost(data);
-        alert('저장되었습니다.');
+        toast.success('저장되었습니다.');
       } else {
         const data = await res.json();
-        alert(data.error || '저장에 실패했습니다.');
+        toast.error(data.error || '저장에 실패했습니다.');
       }
     } catch {
-      alert('서버 연결에 실패했습니다.');
+      toast.error('서버 연결에 실패했습니다.');
     } finally {
       setSaving(false);
     }
@@ -109,7 +115,13 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
       ? '이 포스트를 발행하시겠습니까?'
       : '이 포스트를 비공개로 전환하시겠습니까?';
 
-    if (!confirm(confirmMsg)) return;
+    const ok = await confirm({
+      title: action === 'publish' ? '포스트 발행' : '비공개 전환',
+      message: confirmMsg,
+      confirmText: action === 'publish' ? '발행' : '비공개',
+      variant: action === 'publish' ? 'default' : 'danger',
+    });
+    if (!ok) return;
 
     const res = await fetch(`/api/admin/posts/${id}/publish`, {
       method: 'POST',
@@ -118,33 +130,36 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
     });
 
     if (res.ok) {
+      toast.success(action === 'publish' ? '포스트가 발행되었습니다.' : '비공개로 전환되었습니다.');
       fetchPost();
+    } else {
+      toast.error('처리에 실패했습니다.');
     }
   }
 
   async function handleDelete() {
-    if (!confirm('이 포스트를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) return;
+    const ok = await confirm({
+      title: '포스트 삭제',
+      message: '이 포스트를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.',
+      confirmText: '삭제',
+      variant: 'danger',
+    });
+    if (!ok) return;
 
     const res = await fetch(`/api/admin/posts/${id}`, { method: 'DELETE' });
     if (res.ok) {
+      toast.success('포스트가 삭제되었습니다.');
       router.push('/admin/posts');
+    } else {
+      toast.error('삭제에 실패했습니다.');
     }
   }
-
-  const statusLabels: Record<string, { label: string; color: string }> = {
-    published: { label: '발행됨', color: 'bg-green-100 text-green-700' },
-    draft: { label: '임시저장', color: 'bg-gray-100 text-gray-700' },
-    pending_review: { label: '승인 대기', color: 'bg-yellow-100 text-yellow-700' },
-    archived: { label: '보관됨', color: 'bg-red-100 text-red-700' },
-  };
 
   if (loading) {
     return (
       <AuthGuard>
         <AdminNav />
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
-        </div>
+        <PostEditSkeleton />
       </AuthGuard>
     );
   }
@@ -158,11 +173,11 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
           {/* Top row: back + badges */}
           <div className="flex items-center gap-2 mb-2">
             <Link href="/admin/posts" className="text-sm text-gray-500 hover:text-gray-700">
-              ← 목록
+              &larr; 목록
             </Link>
             {post && (
-              <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${statusLabels[post.status]?.color}`}>
-                {statusLabels[post.status]?.label}
+              <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${postStatusLabels[post.status]?.color}`}>
+                {postStatusLabels[post.status]?.label}
               </span>
             )}
             {post?.auto_generated ? (

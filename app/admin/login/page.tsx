@@ -94,7 +94,7 @@ export default function AdminLoginPage() {
         </div>
 
         <p className="text-center text-xs text-gray-400 mt-6">
-          초기 계정: admin / admin1234
+          ROA Finance Blog Admin
         </p>
       </div>
     </div>

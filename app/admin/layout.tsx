@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import AdminProviders from './components/AdminProviders';
 
 export const metadata: Metadata = {
   title: 'Admin - 로아 블로그 관리자',
@@ -12,7 +13,9 @@ export default function AdminLayout({
 }) {
   return (
     <div className="min-h-screen bg-gray-50 pb-16 sm:pb-0">
-      {children}
+      <AdminProviders>
+        {children}
+      </AdminProviders>
     </div>
   );
 }
