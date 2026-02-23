@@ -3,7 +3,8 @@ import type { Metadata } from 'next';
 import PostCard from '@/components/PostCard';
 import HeroCard from '@/components/HeroCard';
 import FeedTabs from '@/components/FeedTabs';
-import { getContainerClass } from '@/lib/design-system';
+// Container: 1140px, padding 22px/40px (토스피드 스펙)
+const containerClass = 'max-w-[1140px] mx-auto px-[22px] md:px-10';
 
 const categories = ['전체', '금리', '부동산', '주식', '세금'];
 const seriesOptions = [
@@ -165,7 +166,7 @@ export default async function Home(props: Props) {
 
       {/* Page Header */}
       <header className="border-b border-gray-100 py-12 md:py-16">
-        <div className={getContainerClass()}>
+        <div className={containerClass}>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
             금융답게 바라보기, 로아의 시선
           </h1>
@@ -178,9 +179,9 @@ export default async function Home(props: Props) {
       </header>
 
       {/* Main Content */}
-      <main className={getContainerClass() + ' py-12 md:py-16'}>
+      <main className={containerClass + ' py-12 md:py-16'}>
         <section>
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">
+          <h2 className="text-[26px] font-bold text-gray-900 mb-8">
             {selectedSeries !== 'all'
               ? seriesOptions.find((s) => s.id === selectedSeries)?.name || '최신 글'
               : selectedCategory === '전체'
@@ -204,7 +205,7 @@ export default async function Home(props: Props) {
                     <span>💡</span>
                     <span>추천 글</span>
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-10">
                     {recommendedPosts.map((post) => (
                       <PostCard key={post.slug} post={post} />
                     ))}
@@ -213,13 +214,13 @@ export default async function Home(props: Props) {
               )}
             </div>
           ) : (
-            <div className="space-y-8">
+            <div className="space-y-[60px]">
               {/* Hero Card */}
               {heroPost && <HeroCard post={heroPost} />}
 
               {/* Post Grid */}
               {gridPosts.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-10">
                   {gridPosts.map((post) => (
                     <PostCard key={post.slug} post={post} />
                   ))}

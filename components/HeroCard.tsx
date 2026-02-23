@@ -1,85 +1,72 @@
+import Link from 'next/link';
 import type { PostMeta } from '@/lib/content';
 import { formatViews } from '@/lib/utils';
-import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import { getTagGradient } from '@/lib/design-system';
 
 interface HeroCardProps {
   post: PostMeta;
 }
 
 export default function HeroCard({ post }: HeroCardProps) {
+  const ogUrl = `/api/og?title=${encodeURIComponent(post.title)}&tags=${post.tags.join(',')}`;
+
   return (
-    <Card
+    <Link
       href={`/posts/${post.slug}`}
-      className="!p-0 overflow-hidden"
+      className="group flex flex-col md:flex-row gap-6 md:gap-10"
       role="article"
       aria-label={post.title}
     >
-      <div className="flex flex-col md:flex-row md:min-h-[280px]">
-        {/* Gradient Area */}
-        <div
-          className="h-[200px] md:h-auto md:w-[45%] relative flex-shrink-0"
-          style={{ background: getTagGradient(post.tags) }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-l from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      {/* Image — flex-[3] (60%), rounded-[10px], hover scale */}
+      <div className="md:flex-[3] overflow-hidden rounded-[10px]">
+        <img
+          src={ogUrl}
+          alt={post.title}
+          className="w-full aspect-[4/3] md:aspect-auto md:h-full object-cover transition-transform duration-200 ease-in-out group-hover:scale-105"
+          loading="lazy"
+        />
+      </div>
+
+      {/* Content — flex-[2] (40%) */}
+      <div className="md:flex-[2] flex flex-col justify-center">
+        {/* Tags */}
+        <div className="flex gap-2">
+          {post.tags.slice(0, 3).map((tag, i) => (
+            <Badge key={`${tag}-${i}`} tag={tag} size="sm">
+              {tag}
+            </Badge>
+          ))}
         </div>
 
-        {/* Content Area */}
-        <div className="p-6 md:p-8 md:w-[55%] flex flex-col justify-center">
-          {/* Tags */}
-          <div className="flex gap-2 mb-3">
-            {post.tags.slice(0, 3).map((tag) => (
-              <Badge key={tag} tag={tag} size="sm">
-                {tag}
-              </Badge>
-            ))}
-          </div>
+        {/* Title */}
+        <h2 className="mt-3 text-[26px] md:text-[35px] font-bold leading-[1.5] text-gray-900 line-clamp-2 group-hover:text-blue-500 transition-colors duration-200">
+          {post.title}
+        </h2>
 
-          {/* Title */}
-          <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors">
-            {post.title}
-          </h3>
+        {/* Description */}
+        <p className="mt-3 text-[17px] leading-[1.6] text-gray-600 line-clamp-4">
+          {post.description}
+        </p>
 
-          {/* Description */}
-          <p className="text-sm md:text-base text-gray-600 mb-4 line-clamp-3">
-            {post.description}
-          </p>
+        {/* Metadata */}
+        <div className="mt-4 flex items-center gap-2 text-[15px] text-gray-400">
+          <time dateTime={post.date}>{post.date}</time>
 
-          {/* Metadata */}
-          <div className="flex items-center gap-2 text-xs text-gray-500 flex-wrap">
-            <time dateTime={post.date}>{post.date}</time>
+          {post.readingTime && (
+            <>
+              <span>·</span>
+              <span>{post.readingTime}</span>
+            </>
+          )}
 
-            {post.readingTime && (
-              <>
-                <span className="text-gray-300">·</span>
-                <span>{post.readingTime}</span>
-              </>
-            )}
-
-            {formatViews(post.views) && (
-              <>
-                <span className="text-gray-300">·</span>
-                <span className="inline-flex items-center gap-1">
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    className="flex-shrink-0"
-                  >
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
-                  {formatViews(post.views)}
-                </span>
-              </>
-            )}
-          </div>
+          {formatViews(post.views) && (
+            <>
+              <span>·</span>
+              <span>{formatViews(post.views)}</span>
+            </>
+          )}
         </div>
       </div>
-    </Card>
+    </Link>
   );
 }

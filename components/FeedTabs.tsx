@@ -31,7 +31,7 @@ export default function FeedTabs({ tabs, activeTabId }: FeedTabsProps) {
     <div
       ref={scrollRef}
       role="tablist"
-      className="-mx-4 px-4 mt-8 flex gap-2 overflow-x-auto scrollbar-hide"
+      className="-mx-4 px-4 mt-8 flex gap-6 overflow-x-auto scrollbar-hide border-b border-gray-200"
     >
       {tabs.map((tab) => {
         const isActive = tab.id === activeTabId;
@@ -43,10 +43,10 @@ export default function FeedTabs({ tabs, activeTabId }: FeedTabsProps) {
             scroll={false}
             role="tab"
             aria-selected={isActive}
-            className={`flex-shrink-0 min-h-[44px] px-4 py-2.5 rounded-xl text-sm font-semibold transition-all inline-flex items-center ${
+            className={`flex-shrink-0 min-h-[44px] pb-3 text-[15px] font-semibold transition-colors duration-200 inline-flex items-center ${
               isActive
-                ? 'bg-blue-600 text-white'
-                : 'border border-gray-200 text-gray-600 hover:border-blue-600 hover:bg-blue-50'
+                ? 'text-blue-500 border-b-2 border-blue-500'
+                : 'text-gray-500 hover:text-gray-900'
             }`}
           >
             {tab.label}
