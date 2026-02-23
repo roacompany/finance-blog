@@ -168,7 +168,8 @@ export default async function Home(props: Props) {
       <header className="border-b border-gray-100 py-12 md:py-16">
         <div className={containerClass}>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
-            금융답게 바라보기, 로아의 시선
+            <span className="md:hidden">로아의 시선</span>
+            <span className="hidden md:inline">금융답게 바라보기, 로아의 시선</span>
           </h1>
           <p className="mt-3 text-base md:text-lg text-gray-500 leading-relaxed">
             금융을 금융답게 풀어냅니다.
@@ -194,7 +195,7 @@ export default async function Home(props: Props) {
             <div className="py-10">
               <div className="text-center mb-12">
                 <p className="text-gray-500 text-lg">
-                  작성된 글이 없습니다. 추천 글을 확인해보세요.
+                  아직 글이 없어요.
                 </p>
               </div>
 
