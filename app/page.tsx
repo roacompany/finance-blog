@@ -15,6 +15,12 @@ const seriesOptions = [
 ];
 const BASE_URL = 'https://www.roafinance.me';
 
+const seriesBgColors: Record<string, string> = {
+  'Series 00. 프롤로그': 'bg-amber-50/60',
+  'Series 01. 금리·통화정책': 'bg-blue-50/60',
+  'Series 02. 실전 대출 가이드': 'bg-green-50/60',
+};
+
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
@@ -180,7 +186,7 @@ export default async function Home(props: Props) {
       </header>
 
       {/* Main Content */}
-      <main className={containerClass + ' py-12 md:py-16'}>
+      <main className={`${containerClass} py-12 md:py-16 ${selectedSeries !== 'all' ? (seriesBgColors[selectedSeries] || '') : ''}`}>
         <section>
           <h2 className="text-[26px] font-bold text-gray-900 mb-8">
             {selectedSeries !== 'all'

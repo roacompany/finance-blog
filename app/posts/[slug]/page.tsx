@@ -8,6 +8,7 @@ import { RelatedPosts } from "@/components/RelatedPosts";
 import { ReadingProgress } from "@/components/ReadingProgress";
 import { TableOfContents } from "@/components/TableOfContents";
 import { ShareButtons } from "@/components/ShareButtons";
+import { FloatingShare } from "@/components/FloatingShare";
 import { getContainerClass } from "@/lib/design-system";
 import type { Metadata } from "next";
 
@@ -171,6 +172,9 @@ export default async function PostPage({ params }: PageProps) {
 
       {/* Reading Progress Bar */}
       <ReadingProgress />
+
+      {/* Floating Share (Desktop) */}
+      <FloatingShare title={frontmatter.title} url={postUrl} />
 
       <div className="min-h-screen bg-white">
         {/* Header */}

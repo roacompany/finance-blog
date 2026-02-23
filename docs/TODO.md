@@ -40,14 +40,14 @@
 
 ## Low Priority
 
-- [ ] **Floating 공유 버튼** — `posts/[slug]/page.tsx`
-  - 좌측 고정 공유 아이콘
+- [x] **Floating 공유 버튼** — `FloatingShare.tsx`, `posts/[slug]/page.tsx`
+  - 데스크톱 좌측 고정 아이콘 (Twitter, Facebook, 링크복사)
 
-- [ ] **Related Posts 배경색** — `RelatedPosts.tsx`
-  - `bg-blue-50` 배경으로 시각적 차별화
+- [x] **Related Posts 배경색** — `RelatedPosts.tsx`
+  - 이미 구현됨 (`bg-blue-50 rounded-2xl`)
 
-- [ ] **섹션별 배경색 차별화** — `page.tsx`
-  - 토스 피드 스타일 시리즈별 배경색
+- [x] **섹션별 배경색 차별화** — `page.tsx`
+  - 시리즈별 배경색: 프롤로그(amber), 금리(blue), 대출(green)
 
 ## 콘텐츠
 
