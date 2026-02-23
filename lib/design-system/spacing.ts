@@ -85,12 +85,3 @@ export function getContainerClass(tight = false): string {
     : 'max-w-7xl mx-auto px-4 md:px-6 lg:px-8';
 }
 
-// Grid gap helper
-export function getGridGap(size: 'sm' | 'md' | 'lg' = 'md'): string {
-  const gapMap = {
-    sm: 'gap-3',
-    md: 'gap-4 md:gap-6',
-    lg: 'gap-6 md:gap-8',
-  };
-  return gapMap[size];
-}
