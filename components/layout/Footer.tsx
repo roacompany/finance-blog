@@ -40,7 +40,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/?filter=all"
+                  href="/"
                   className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
                 >
                   시리즈
@@ -51,7 +51,7 @@ export function Footer() {
                   href="/about"
                   className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
                 >
-                  About
+                  소개
                 </Link>
               </li>
             </ul>
@@ -68,7 +68,7 @@ export function Footer() {
                   href="/privacy"
                   className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
                 >
-                  Privacy
+                  개인정보처리방침
                 </Link>
               </li>
               <li>
@@ -76,7 +76,7 @@ export function Footer() {
                   href="/contact"
                   className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
                 >
-                  Contact
+                  문의
                 </Link>
               </li>
             </ul>
