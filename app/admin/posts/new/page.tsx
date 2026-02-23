@@ -4,9 +4,11 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminNav from '../../components/AdminNav';
 import AuthGuard from '../../components/AuthGuard';
+import { useToast } from '@/components/ui/Toast';
 
 export default function NewPostPage() {
   const router = useRouter();
+  const toast = useToast();
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
     title: '',
@@ -55,10 +57,10 @@ export default function NewPostPage() {
         router.push(`/admin/posts/${data.id}`);
       } else {
         const data = await res.json();
-        alert(data.error || '저장에 실패했습니다.');
+        toast.error(data.error || '저장에 실패했습니다.');
       }
     } catch {
-      alert('서버 연결에 실패했습니다.');
+      toast.error('서버 연결에 실패했습니다.');
     } finally {
       setSaving(false);
     }

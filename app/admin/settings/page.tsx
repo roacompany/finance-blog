@@ -3,22 +3,28 @@
 import { useEffect, useState } from 'react';
 import AdminNav from '../components/AdminNav';
 import AuthGuard from '../components/AuthGuard';
+import { SettingsSkeleton } from '../components/skeletons';
+import { useToast } from '@/components/ui/Toast';
 
 interface Settings {
   site_title: string;
   site_description: string;
   site_url: string;
   author_name: string;
-  auto_post_enabled: string;
-  auto_post_time: string;
   posts_per_page: string;
   [key: string]: string;
 }
 
+interface AiStatus {
+  configured: boolean;
+  provider: string | null;
+}
+
 export default function AdminSettingsPage() {
+  const toast = useToast();
   const [settings, setSettings] = useState<Settings | null>(null);
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [aiStatus, setAiStatus] = useState<AiStatus | null>(null);
   const [passwordForm, setPasswordForm] = useState({
     current: '',
     newPassword: '',
@@ -28,12 +34,24 @@ export default function AdminSettingsPage() {
 
   useEffect(() => {
     fetchSettings();
+    fetchAiStatus();
   }, []);
 
   async function fetchSettings() {
     const res = await fetch('/api/admin/settings');
     if (res.ok) {
       setSettings(await res.json());
+    }
+  }
+
+  async function fetchAiStatus() {
+    try {
+      const res = await fetch('/api/admin/ai-status');
+      if (res.ok) {
+        setAiStatus(await res.json());
+      }
+    } catch {
+      // non-critical
     }
   }
 
@@ -55,8 +73,9 @@ export default function AdminSettingsPage() {
     });
 
     if (res.ok) {
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
+      toast.success('설정이 저장되었습니다.');
+    } else {
+      toast.error('설정 저장에 실패했습니다.');
     }
     setSaving(false);
   }
@@ -85,7 +104,8 @@ export default function AdminSettingsPage() {
     });
 
     if (res.ok) {
-      setPasswordMsg('비밀번호가 변경되었습니다.');
+      toast.success('비밀번호가 변경되었습니다.');
+      setPasswordMsg('');
       setPasswordForm({ current: '', newPassword: '', confirm: '' });
     } else {
       const data = await res.json();
@@ -97,9 +117,7 @@ export default function AdminSettingsPage() {
     return (
       <AuthGuard>
         <AdminNav />
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
-        </div>
+        <SettingsSkeleton />
       </AuthGuard>
     );
   }
@@ -164,38 +182,38 @@ export default function AdminSettingsPage() {
             </div>
           </div>
 
-          {/* Auto Post Settings */}
+          {/* AI Connection Status */}
           <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 space-y-4">
-            <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-2">자동 포스트 설정</h2>
-            <p className="text-sm text-gray-500 -mt-1">Claude Code가 자동으로 포스트를 생성하는 설정입니다.</p>
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-2">AI 콘텐츠 생성</h2>
+            <p className="text-sm text-gray-500 -mt-1">백로그 토픽에서 자동으로 포스트를 생성할 때 사용됩니다.</p>
 
-            <div className="flex items-center gap-3">
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={settings.auto_post_enabled === 'true'}
-                  onChange={(e) => handleChange('auto_post_enabled', String(e.target.checked))}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600" />
-              </label>
-              <span className="text-sm text-gray-700">자동 포스트 생성 활성화</span>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">생성 시간</label>
-              <input
-                type="time"
-                value={settings.auto_post_time}
-                onChange={(e) => handleChange('auto_post_time', e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <p className="text-xs text-gray-400 mt-1">매일 지정된 시간에 Claude Code가 포스트를 자동 생성합니다.</p>
-            </div>
+            {aiStatus ? (
+              aiStatus.configured ? (
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-green-50 border border-green-100">
+                  <div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0" />
+                  <span className="text-sm text-green-700 font-medium">
+                    {aiStatus.provider} API 연결됨
+                  </span>
+                </div>
+              ) : (
+                <div className="p-3 rounded-xl bg-yellow-50 border border-yellow-100">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-2 h-2 rounded-full bg-yellow-500 flex-shrink-0" />
+                    <span className="text-sm text-yellow-700 font-medium">AI API 미설정</span>
+                  </div>
+                  <p className="text-xs text-yellow-600 ml-5">
+                    자동 콘텐츠 생성을 사용하려면 환경변수를 설정하세요:<br />
+                    <code className="font-mono bg-yellow-100 px-1 rounded">AI_PROVIDER=claude|openai</code><br />
+                    <code className="font-mono bg-yellow-100 px-1 rounded">AI_API_KEY=your-api-key</code>
+                  </p>
+                </div>
+              )
+            ) : (
+              <div className="h-12 animate-pulse bg-gray-100 rounded-xl" />
+            )}
           </div>
 
           <div className="flex items-center justify-end gap-3">
-            {saved && <span className="text-sm text-green-600">저장되었습니다</span>}
             <button
               type="submit"
               disabled={saving}

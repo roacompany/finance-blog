@@ -3,6 +3,7 @@ import { revalidatePath } from 'next/cache';
 import { requireAuth } from '@/lib/auth';
 import { getTopicById, updateTopic, topicToJson } from '@/lib/topics-db';
 import { createPost, getPostBySlugDb } from '@/lib/posts-db';
+import { isAIConfigured, generateContent } from '@/lib/ai-content';
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -53,12 +54,27 @@ export async function POST(request: NextRequest, context: RouteContext) {
     }
 
     if (mode === 'auto') {
-      // 자동 생성: pending_review 상태로 직접 생성
+      // AI 미설정 시 에러 반환
+      if (!isAIConfigured()) {
+        return NextResponse.json(
+          { error: 'AI API가 설정되지 않았습니다. AI_PROVIDER와 AI_API_KEY 환경변수를 설정하세요.', needsConfig: true },
+          { status: 400 }
+        );
+      }
+
+      // AI 콘텐츠 생성
+      const content = await generateContent({
+        title: topic.title,
+        tags,
+        description: topic.description || undefined,
+        series: topic.series || undefined,
+      });
+
       const post = await createPost({
         title: topic.title,
         slug,
         description: topic.description || `${topic.title}에 대해 알아봅니다.`,
-        content: generateDraftContent(topic.title, tags),
+        content,
         date: new Date().toISOString().split('T')[0],
         tags,
         series: topic.series || '',
@@ -69,7 +85,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
       // 토픽 상태를 completed로 업데이트
       await updateTopic(id, { status: 'completed' });
 
-      // 캐시 갱신 (대시보드에서 승인 대기 목록 즉시 반영)
+      // 캐시 갱신
       try { revalidatePath('/'); } catch { /* non-critical */ }
 
       return NextResponse.json({
@@ -79,12 +95,19 @@ export async function POST(request: NextRequest, context: RouteContext) {
         topic: topicToJson((await getTopicById(id))!),
       });
     } else {
-      // 수동 작성: 빈 초안 생성 후 편집 페이지로 이동
+      // 수동 작성: 플레이스홀더 초안 생성
+      const content = await generateContent({
+        title: topic.title,
+        tags,
+        description: topic.description || undefined,
+        series: topic.series || undefined,
+      });
+
       const post = await createPost({
         title: topic.title,
         slug,
         description: topic.description || '',
-        content: generateDraftContent(topic.title, tags),
+        content,
         date: new Date().toISOString().split('T')[0],
         tags,
         series: topic.series || '',
@@ -109,33 +132,4 @@ export async function POST(request: NextRequest, context: RouteContext) {
     const message = error instanceof Error ? error.message : 'Internal server error';
     return NextResponse.json({ error: message }, { status: 500 });
   }
-}
-
-function generateDraftContent(title: string, tags: string[]): string {
-  return `## ${title}
-
-> 이 포스트는 백로그 토픽에서 생성된 초안입니다. 내용을 채워주세요.
-
-### 핵심 요약
-
-- 핵심 내용 1
-- 핵심 내용 2
-- 핵심 내용 3
-
-### 상세 분석
-
-본문 내용을 작성해주세요.
-
-### 실전 활용 팁
-
-독자에게 실질적인 도움이 되는 팁을 작성해주세요.
-
-### 마치며
-
-마무리 내용을 작성해주세요.
-
----
-
-**관련 키워드**: ${tags.join(', ')}
-`;
 }
