@@ -2,6 +2,8 @@ import Link from "next/link";
 import Callout from "@/components/mdx/Callout";
 import { Accordion } from "@/components/mdx/Accordion";
 import { LoanCalculator, DsrCalculator } from "@/components/calculators";
+import { colors } from "@/lib/design-system/colors";
+import { typography } from "@/lib/design-system/typography";
 
 export function useMDXComponents(components: any) {
   return {
@@ -15,10 +17,10 @@ export function useMDXComponents(components: any) {
     p: ({ children }: any) => (
       <p style={{
         marginBottom: '24px',
-        fontSize: '17px',
-        lineHeight: 1.7,
-        letterSpacing: '-0.01em',
-        color: '#4E5968',
+        fontSize: typography.body.large.fontSize,
+        lineHeight: typography.body.large.lineHeight,
+        letterSpacing: typography.body.large.letterSpacing,
+        color: typography.body.large.color,
         wordBreak: 'keep-all',
       }}>
         {children}
@@ -28,11 +30,11 @@ export function useMDXComponents(components: any) {
       <h1 style={{
         marginTop: '48px',
         marginBottom: '32px',
-        fontSize: '32px',
-        fontWeight: 700,
-        lineHeight: 1.3,
-        letterSpacing: '-0.02em',
-        color: '#191F28',
+        fontSize: typography.heading.h1.fontSize,
+        fontWeight: typography.heading.h1.fontWeight,
+        lineHeight: typography.heading.h1.lineHeight,
+        letterSpacing: typography.heading.h1.letterSpacing,
+        color: colors.text.high,
       }}>
         {children}
       </h1>
@@ -42,11 +44,11 @@ export function useMDXComponents(components: any) {
         marginTop: '48px',
         marginBottom: '16px',
         paddingBottom: '12px',
-        fontSize: '24px',
-        fontWeight: 700,
-        lineHeight: 1.4,
-        color: '#191F28',
-        borderBottom: '1px solid #E5E8EB',
+        fontSize: typography.heading.h2.fontSize,
+        fontWeight: typography.heading.h2.fontWeight,
+        lineHeight: typography.heading.h2.lineHeight,
+        color: colors.text.high,
+        borderBottom: `1px solid ${colors.border.default}`,
       }}>
         {children}
       </h2>
@@ -55,10 +57,10 @@ export function useMDXComponents(components: any) {
       <h3 style={{
         marginTop: '32px',
         marginBottom: '12px',
-        fontSize: '20px',
-        fontWeight: 700,
-        lineHeight: 1.4,
-        color: '#191F28',
+        fontSize: typography.heading.h3.fontSize,
+        fontWeight: typography.heading.h3.fontWeight,
+        lineHeight: typography.heading.h3.lineHeight,
+        color: colors.text.high,
       }}>
         {children}
       </h3>
@@ -67,9 +69,9 @@ export function useMDXComponents(components: any) {
       <ul style={{
         marginBottom: '24px',
         paddingLeft: '24px',
-        fontSize: '17px',
-        lineHeight: 1.7,
-        color: '#4E5968',
+        fontSize: typography.body.large.fontSize,
+        lineHeight: typography.body.large.lineHeight,
+        color: typography.body.large.color,
         listStyleType: 'disc',
       }}>
         {children}
@@ -79,9 +81,9 @@ export function useMDXComponents(components: any) {
       <ol style={{
         marginBottom: '24px',
         paddingLeft: '24px',
-        fontSize: '17px',
-        lineHeight: 1.7,
-        color: '#4E5968',
+        fontSize: typography.body.large.fontSize,
+        lineHeight: typography.body.large.lineHeight,
+        color: typography.body.large.color,
         listStyleType: 'decimal',
       }}>
         {children}
@@ -90,9 +92,9 @@ export function useMDXComponents(components: any) {
     li: ({ children }: any) => (
       <li style={{
         marginBottom: '8px',
-        fontSize: '17px',
-        lineHeight: 1.7,
-        color: '#4E5968',
+        fontSize: typography.body.large.fontSize,
+        lineHeight: typography.body.large.lineHeight,
+        color: typography.body.large.color,
       }}>
         {children}
       </li>
@@ -100,7 +102,7 @@ export function useMDXComponents(components: any) {
     a: ({ href, children }: any) => (
       <Link
         href={href || "#"}
-        style={{ color: '#3182F6', textDecoration: 'none', fontWeight: 500 }}
+        style={{ color: colors.brand.primary, textDecoration: 'none', fontWeight: 500 }}
       >
         {children}
       </Link>
@@ -111,13 +113,13 @@ export function useMDXComponents(components: any) {
         overflowX: 'auto',
         margin: '32px 0',
         borderRadius: '12px',
-        border: '1px solid #E5E8EB',
-        backgroundColor: '#FFFFFF',
+        border: `1px solid ${colors.border.default}`,
+        backgroundColor: colors.background.primary,
       }}>
         <table style={{
           width: '100%',
           textAlign: 'left',
-          fontSize: '15px',
+          fontSize: typography.body.default.fontSize,
           minWidth: '400px',
           borderCollapse: 'collapse',
         }}>
@@ -127,8 +129,8 @@ export function useMDXComponents(components: any) {
     ),
     thead: ({ children }: any) => (
       <thead style={{
-        backgroundColor: '#F9FAFB',
-        borderBottom: '1px solid #E5E8EB',
+        backgroundColor: colors.background.secondary,
+        borderBottom: `1px solid ${colors.border.default}`,
       }}>
         {children}
       </thead>
@@ -137,10 +139,10 @@ export function useMDXComponents(components: any) {
       <th style={{
         padding: '14px 16px',
         fontWeight: 600,
-        fontSize: '14px',
-        color: '#6B7684',
+        fontSize: typography.body.small.fontSize,
+        color: typography.body.small.color,
         whiteSpace: 'nowrap',
-        borderBottom: '1px solid #E5E8EB',
+        borderBottom: `1px solid ${colors.border.default}`,
       }}>
         {children}
       </th>
@@ -149,13 +151,13 @@ export function useMDXComponents(components: any) {
       <tbody>{children}</tbody>
     ),
     tr: ({ children }: any) => (
-      <tr style={{ borderBottom: '1px solid #F2F4F6' }}>{children}</tr>
+      <tr style={{ borderBottom: `1px solid ${colors.background.tertiary}` }}>{children}</tr>
     ),
     td: ({ children }: any) => (
       <td style={{
         padding: '14px 16px',
-        fontSize: '15px',
-        color: '#4E5968',
+        fontSize: typography.body.default.fontSize,
+        color: typography.body.large.color,
         verticalAlign: 'top',
         lineHeight: 1.5,
       }}>
@@ -167,10 +169,10 @@ export function useMDXComponents(components: any) {
       <code style={{
         padding: '3px 8px',
         borderRadius: '6px',
-        backgroundColor: '#F2F4F6',
-        fontSize: '14px',
-        fontFamily: '"SF Mono", Menlo, monospace',
-        color: '#191F28',
+        backgroundColor: colors.background.tertiary,
+        fontSize: typography.body.small.fontSize,
+        fontFamily: typography.fontFamily.mono.join(', '),
+        color: colors.text.high,
       }}>
         {children}
       </code>
@@ -181,25 +183,25 @@ export function useMDXComponents(components: any) {
         margin: '24px 0',
         padding: '20px 24px',
         borderRadius: '12px',
-        backgroundColor: '#F9FAFB',
-        border: '1px solid #E5E8EB',
+        backgroundColor: colors.background.secondary,
+        border: `1px solid ${colors.border.default}`,
         overflow: 'auto',
-        fontSize: '14px',
+        fontSize: typography.body.small.fontSize,
         lineHeight: 1.7,
-        color: '#4E5968',
-        fontFamily: '"SF Mono", Menlo, monospace',
+        color: typography.body.large.color,
+        fontFamily: typography.fontFamily.mono.join(', '),
       }}>
         {children}
       </pre>
     ),
     hr: () => (
-      <hr style={{ margin: '48px 0', border: 'none', borderTop: '1px solid #E5E8EB' }} />
+      <hr style={{ margin: '48px 0', border: 'none', borderTop: `1px solid ${colors.border.default}` }} />
     ),
     strong: ({ children }: any) => (
-      <strong style={{ fontWeight: 700, color: '#191F28' }}>{children}</strong>
+      <strong style={{ fontWeight: 700, color: colors.text.high }}>{children}</strong>
     ),
     em: ({ children }: any) => (
-      <em style={{ fontStyle: 'italic', color: '#4E5968' }}>{children}</em>
+      <em style={{ fontStyle: 'italic', color: typography.body.large.color }}>{children}</em>
     ),
   };
 }

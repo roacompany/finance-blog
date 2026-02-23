@@ -95,5 +95,5 @@ H1 - 메인 제목 (1개)
 내부 링크 섹션이 누락된 경우:
 ```
 [ERROR] 배포 불가: 내부 링크 섹션이 누락되었습니다.
-templates/blog-post.mdx의 "관련 글" 섹션을 참고하세요.
+content/templates/post-template.mdx의 "관련 글" 섹션을 참고하세요.
 ```

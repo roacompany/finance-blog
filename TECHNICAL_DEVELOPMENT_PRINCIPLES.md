@@ -91,14 +91,9 @@
    - 실용성 (Practical): 실행 가능한 정보
    - 사실성 (Factual): 가짜 데이터 금지
 
-2. **DEPLOYMENT_ERROR_CASES.md**
-   - 배포 전 체크리스트
-   - 에러 케이스 확인
-   - 로컬 빌드 테스트
-
-3. **TOSS_STYLE_TEMPLATES.md**
+2. **WRITING_TEMPLATES.md**
    - 토스 스타일 글쓰기
-   - 3가지 템플릿 활용
+   - 6가지 템플릿 활용
    - 즉시적 용어 설명
 
 4. **TECHNICAL_DEVELOPMENT_PRINCIPLES.md** (본 문서)
@@ -152,7 +147,7 @@ npm run type-check
 ```
 1. 로컬 빌드로 정확한 에러 확인
 2. 에러 메시지 분석
-3. DEPLOYMENT_ERROR_CASES.md 참조
+3. docs/archive/DEPLOYMENT_ERROR_CASES.md 참조
 4. 수정 및 재빌드
 5. 성공 확인 후 커밋
 ```
@@ -173,9 +168,9 @@ npm run type-check
 #### 4.4 중복 작업 방지
 ```
 # 문서화 활용
-- DEPLOYMENT_ERROR_CASES.md: 에러 해결 패턴
+- docs/archive/DEPLOYMENT_ERROR_CASES.md: 에러 해결 패턴
 - ROA_WRITING_PRINCIPLES.md: 글쓰기 원칙
-- TOSS_STYLE_TEMPLATES.md: 템플릿
+- WRITING_TEMPLATES.md: 템플릿
 
 → 같은 문제를 다시 분석하지 않음
 ```
@@ -204,7 +199,7 @@ npm run type-check
 #### ✅ 효율적인 케이스
 ```
 1. 로컬 빌드 → 에러 확인 → 수정 → 재빌드 성공 → 1회 푸시
-2. 에러 메시지 읽기 → DEPLOYMENT_ERROR_CASES.md 확인 → 즉시 수정
+2. 에러 메시지 읽기 → docs/archive/DEPLOYMENT_ERROR_CASES.md 확인 → 즉시 수정
 3. 필요한 파일만 1번 읽기 (병렬 처리)
 4. 기존 문서 참조 → 패턴 적용 → 해결
 ```
@@ -217,8 +212,8 @@ npm run type-check
 
 ### 작업 시작 전
 - [ ] ROA_WRITING_PRINCIPLES.md 확인
-- [ ] DEPLOYMENT_ERROR_CASES.md 확인
-- [ ] TOSS_STYLE_TEMPLATES.md 확인 (콘텐츠 작업 시)
+- [ ] docs/archive/DEPLOYMENT_ERROR_CASES.md 확인
+- [ ] WRITING_TEMPLATES.md 확인 (콘텐츠 작업 시)
 - [ ] 불확실한 부분 리스트업
 
 ### 작업 중
@@ -244,7 +239,7 @@ npm run type-check
 이 문서는 살아있는 문서입니다. 다음 상황에서 업데이트됩니다:
 
 1. **새로운 에러 케이스 발견**
-   - DEPLOYMENT_ERROR_CASES.md에 추가
+   - docs/archive/DEPLOYMENT_ERROR_CASES.md에 추가
    - 해당 케이스 예방 원칙 추가
 
 2. **워크플로우 개선**
@@ -270,8 +265,7 @@ npm run type-check
 ## 7. 관련 문서
 
 - [ROA_WRITING_PRINCIPLES.md](./ROA_WRITING_PRINCIPLES.md) - 글쓰기 원칙
-- [DEPLOYMENT_ERROR_CASES.md](./DEPLOYMENT_ERROR_CASES.md) - 배포 에러 케이스
-- [TOSS_STYLE_TEMPLATES.md](./TOSS_STYLE_TEMPLATES.md) - 토스 스타일 템플릿
+- [WRITING_TEMPLATES.md](./WRITING_TEMPLATES.md) - 토스 스타일 템플릿
 - [.claude/deployment-workflow.md](./.claude/deployment-workflow.md) - 배포 워크플로우
 
 ---
