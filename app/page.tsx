@@ -1,7 +1,8 @@
-import Link from 'next/link';
 import { getAllPosts } from '@/lib/content';
 import type { Metadata } from 'next';
 import PostCard from '@/components/PostCard';
+import HeroCard from '@/components/HeroCard';
+import FeedTabs from '@/components/FeedTabs';
 import { getContainerClass } from '@/lib/design-system';
 
 const categories = ['전체', '금리', '부동산', '주식', '세금'];
@@ -85,6 +86,23 @@ export default async function Home(props: Props) {
     );
   }
 
+  const heroPost = filteredPosts[0] ?? null;
+  const gridPosts = filteredPosts.slice(1);
+
+  const tabs = [
+    { id: 'all', label: '전체', href: '/' },
+    ...seriesOptions.filter(s => s.id !== 'all').map(s => ({
+      id: s.id, label: s.name, href: `/?series=${encodeURIComponent(s.id)}`,
+    })),
+    ...categories.filter(c => c !== '전체').map(c => ({
+      id: `cat-${c}`, label: c, href: `/?category=${c}`,
+    })),
+  ];
+
+  const activeTabId = selectedSeries !== 'all'
+    ? selectedSeries
+    : selectedCategory !== '전체' ? `cat-${selectedCategory}` : 'all';
+
   const recommendedPosts = filteredPosts.length === 0 ? allPosts.slice(0, 3) : [];
 
   const blogJsonLd = {
@@ -155,55 +173,7 @@ export default async function Home(props: Props) {
             금융을 금융답게 풀어냅니다.
           </p>
 
-          {/* Series Navigation */}
-          <nav className="mt-8">
-            <h2 className="text-sm font-semibold text-gray-500 mb-3">시리즈</h2>
-            <ul className="flex gap-2 flex-wrap">
-              {seriesOptions.map((series) => (
-                <li key={series.id}>
-                  <Link
-                    href={
-                      series.id === 'all'
-                        ? '/'
-                        : `/?series=${encodeURIComponent(series.id)}`
-                    }
-                    className={`block px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-                      selectedSeries === series.id
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-transparent text-gray-600 border border-gray-200 hover:border-blue-600 hover:bg-blue-50'
-                    }`}
-                    scroll={false}
-                  >
-                    {series.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          {/* Category Navigation (only when no series selected) */}
-          {selectedSeries === 'all' && (
-            <nav className="mt-6">
-              <h2 className="text-sm font-semibold text-gray-500 mb-3">카테고리</h2>
-              <ul className="flex gap-2 flex-wrap">
-                {categories.map((category) => (
-                  <li key={category}>
-                    <Link
-                      href={category === '전체' ? '/' : `/?category=${category}`}
-                      className={`block px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-                        selectedCategory === category
-                          ? 'bg-gray-800 text-white'
-                          : 'bg-transparent text-gray-600 hover:bg-gray-100'
-                      }`}
-                      scroll={false}
-                    >
-                      {category}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          )}
+          <FeedTabs tabs={tabs} activeTabId={activeTabId} />
         </div>
       </header>
 
@@ -234,7 +204,7 @@ export default async function Home(props: Props) {
                     <span>💡</span>
                     <span>추천 글</span>
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {recommendedPosts.map((post) => (
                       <PostCard key={post.slug} post={post} />
                     ))}
@@ -243,11 +213,18 @@ export default async function Home(props: Props) {
               )}
             </div>
           ) : (
-            /* Post Grid */
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredPosts.map((post) => (
-                <PostCard key={post.slug} post={post} />
-              ))}
+            <div className="space-y-8">
+              {/* Hero Card */}
+              {heroPost && <HeroCard post={heroPost} />}
+
+              {/* Post Grid */}
+              {gridPosts.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {gridPosts.map((post) => (
+                    <PostCard key={post.slug} post={post} />
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </section>
