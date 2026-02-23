@@ -252,8 +252,10 @@ export default async function PostPage({ params }: PageProps) {
                     </div>
                   </header>
 
-                  {/* Table of Contents (Mobile) */}
-                  <TableOfContents />
+                  {/* Table of Contents (Mobile only) */}
+                  <div className="lg:hidden">
+                    <TableOfContents />
+                  </div>
 
                   {/* Series Navigation */}
                   {frontmatter.series && (
