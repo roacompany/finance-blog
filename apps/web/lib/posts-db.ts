@@ -271,20 +271,24 @@ export async function getPostStats(): Promise<{
   pending_review: number;
   archived: number;
   auto_generated: number;
+  members: number;
 }> {
   const db = await getDb();
-  const result = await db.execute(`
-    SELECT
-      COUNT(*) as total,
-      SUM(CASE WHEN status = 'published' THEN 1 ELSE 0 END) as published,
-      SUM(CASE WHEN status = 'draft' THEN 1 ELSE 0 END) as draft,
-      SUM(CASE WHEN status = 'pending_review' THEN 1 ELSE 0 END) as pending_review,
-      SUM(CASE WHEN status = 'archived' THEN 1 ELSE 0 END) as archived,
-      SUM(CASE WHEN auto_generated = 1 THEN 1 ELSE 0 END) as auto_generated
-    FROM posts
-  `);
+  const [postResult, memberResult] = await Promise.all([
+    db.execute(`
+      SELECT
+        COUNT(*) as total,
+        SUM(CASE WHEN status = 'published' THEN 1 ELSE 0 END) as published,
+        SUM(CASE WHEN status = 'draft' THEN 1 ELSE 0 END) as draft,
+        SUM(CASE WHEN status = 'pending_review' THEN 1 ELSE 0 END) as pending_review,
+        SUM(CASE WHEN status = 'archived' THEN 1 ELSE 0 END) as archived,
+        SUM(CASE WHEN auto_generated = 1 THEN 1 ELSE 0 END) as auto_generated
+      FROM posts
+    `),
+    db.execute(`SELECT COUNT(*) as count FROM members WHERE active = 1`),
+  ]);
 
-  const stats = result.rows[0] || {};
+  const stats = postResult.rows[0] || {};
   return {
     total: Number(stats.total ?? 0),
     published: Number(stats.published ?? 0),
@@ -292,6 +296,7 @@ export async function getPostStats(): Promise<{
     pending_review: Number(stats.pending_review ?? 0),
     archived: Number(stats.archived ?? 0),
     auto_generated: Number(stats.auto_generated ?? 0),
+    members: Number(memberResult.rows[0]?.count ?? 0),
   };
 }
 

@@ -16,6 +16,7 @@ interface Stats {
   pending_review: number;
   archived: number;
   auto_generated: number;
+  members: number;
 }
 
 interface PostItem {
@@ -96,11 +97,12 @@ export default function AdminDashboard() {
 
           {/* Stats Cards */}
           {stats && (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4 mb-6 sm:mb-8">
               <StatCard label="전체 포스트" value={stats.total} color="blue" />
               <StatCard label="발행됨" value={stats.published} color="green" />
               <StatCard label="승인 대기" value={stats.pending_review} color="yellow" />
               <StatCard label="임시저장" value={stats.draft} color="gray" />
+              <StatCard label="활성 멤버" value={stats.members} color="purple" href="/admin/members" />
             </div>
           )}
 
@@ -217,12 +219,13 @@ export default function AdminDashboard() {
   );
 }
 
-function StatCard({ label, value, color }: { label: string; value: number; color: string }) {
+function StatCard({ label, value, color, href }: { label: string; value: number; color: string; href?: string }) {
   const colors: Record<string, string> = {
     blue: 'bg-blue-50 border-blue-100',
     green: 'bg-green-50 border-green-100',
     yellow: 'bg-yellow-50 border-yellow-100',
     gray: 'bg-gray-50 border-gray-100',
+    purple: 'bg-purple-50 border-purple-100',
   };
 
   const textColors: Record<string, string> = {
@@ -230,12 +233,27 @@ function StatCard({ label, value, color }: { label: string; value: number; color
     green: 'text-green-700',
     yellow: 'text-yellow-700',
     gray: 'text-gray-700',
+    purple: 'text-purple-700',
   };
+
+  const inner = (
+    <>
+      <p className="text-xs sm:text-sm text-gray-500 font-medium">{label}</p>
+      <p className={`text-2xl sm:text-3xl font-bold mt-1 ${textColors[color]}`}>{value.toLocaleString()}</p>
+    </>
+  );
+
+  if (href) {
+    return (
+      <Link href={href} className={`rounded-2xl border p-4 sm:p-5 ${colors[color]} hover:opacity-80 transition-opacity block`}>
+        {inner}
+      </Link>
+    );
+  }
 
   return (
     <div className={`rounded-2xl border p-4 sm:p-5 ${colors[color]}`}>
-      <p className="text-xs sm:text-sm text-gray-500 font-medium">{label}</p>
-      <p className={`text-2xl sm:text-3xl font-bold mt-1 ${textColors[color]}`}>{value}</p>
+      {inner}
     </div>
   );
 }
