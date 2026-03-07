@@ -9,7 +9,7 @@
     "./web.css": "./output/web.css"
   },
   "scripts": {
-    "build": "tsc && node dist/scripts/generate.js",
+    "build": "tsc && node dist/generate.js",
     "dev": "tsc --watch"
   },
   "devDependencies": {
