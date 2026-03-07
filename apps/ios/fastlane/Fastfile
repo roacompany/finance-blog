@@ -1,0 +1,54 @@
+default_platform(:ios)
+
+platform :ios do
+  # App Store Connect API Key 설정
+  def api_key
+    app_store_connect_api_key(
+      key_id: "2LSXRAHPW7",
+      issuer_id: "b70eb6de-e25a-47a1-8021-28872df65d61",
+      key_filepath: File.expand_path("~/.appstoreconnect/private_keys/AuthKey_2LSXRAHPW7.p8"),
+      duration: 1200,
+      in_house: false
+    )
+  end
+
+  # 메타데이터만 업데이트 (빌드 없이)
+  desc "App Store 메타데이터 업로드"
+  lane :metadata do
+    deliver(
+      api_key: api_key,
+      skip_binary_upload: true,
+      skip_screenshots: true,
+      force: true
+    )
+  end
+
+  # TestFlight 배포
+  desc "TestFlight 빌드 업로드"
+  lane :beta do
+    build_app(
+      project: "ROAFinance.xcodeproj",
+      scheme: "ROAFinance",
+      configuration: "Release",
+      export_method: "app-store",
+      export_options: {
+        provisioningProfiles: {
+          "me.roafinance.app" => "ROAFinance AppStore"
+        }
+      }
+    )
+    upload_to_testflight(api_key: api_key, skip_waiting_for_build_processing: true)
+  end
+
+  # App Store 심사 제출
+  desc "App Store 제출"
+  lane :release do
+    deliver(
+      api_key: api_key,
+      skip_screenshots: false,
+      force: true,
+      submit_for_review: false,    # 수동으로 제출 (Owner 결정)
+      automatic_release: false
+    )
+  end
+end

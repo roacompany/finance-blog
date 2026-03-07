@@ -26,7 +26,21 @@
   <dict>
     <key>NSAllowsLocalNetworking</key>
     <true/>
+    <key>NSExceptionDomains</key>
+    <dict>
+      <key>roafinance.me</key>
+      <dict>
+        <key>NSExceptionAllowsInsecureHTTPLoads</key>
+        <false/>
+        <key>NSIncludesSubdomains</key>
+        <true/>
+      </dict>
+    </dict>
   </dict>
+  <key>ITSAppUsesNonExemptEncryption</key>
+  <false/>
+  <key>NSUserTrackingUsageDescription</key>
+  <string>광고 맞춤화를 위해 사용하지 않습니다. 분석 목적으로만 사용돼요.</string>
   <key>UIApplicationSceneManifest</key>
   <dict>
     <key>UIApplicationSupportsMultipleScenes</key>
