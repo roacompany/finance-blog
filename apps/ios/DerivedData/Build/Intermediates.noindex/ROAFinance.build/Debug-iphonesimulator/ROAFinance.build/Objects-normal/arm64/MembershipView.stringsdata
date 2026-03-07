@@ -1,0 +1,80 @@
+{
+  "source": "/Users/roque/finance-blog/apps/ios/ROAFinance/Features/Membership/MembershipView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "ROA Membership",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 32
+        }
+      },
+      {
+        "comment": "",
+        "key": "신용카드 불필요 · 언제든 탈퇴 가능",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 61
+        }
+      },
+      {
+        "comment": "",
+        "key": "지나간 글은\n멤버만 읽을 수 있어요",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 40
+        }
+      },
+      {
+        "comment": "",
+        "key": "이메일 하나로 무료 가입.\n모든 아카이브 글과 시리즈 전체를 열람하세요.",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 46
+        }
+      },
+      {
+        "comment": "",
+        "key": "이메일 주소",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 76
+        }
+      },
+      {
+        "comment": "",
+        "key": "무료로 멤버 가입하기",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 101
+        }
+      },
+      {
+        "comment": "",
+        "key": "멤버가 되셨어요",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 122
+        }
+      },
+      {
+        "comment": "",
+        "key": "이제 모든 아카이브 글을\n자유롭게 읽을 수 있어요.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 126
+        }
+      },
+      {
+        "comment": "",
+        "key": "확인",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 131
+        }
+      }
+    ]
+  },
+  "version": 1
+}

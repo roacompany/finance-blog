@@ -1,0 +1,109 @@
+{
+  "" : {
+    "diagnostics" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ROAFinance-primary.dia",
+    "emit-module-dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ROAFinance-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ROAFinance-primary-emit-module.dia",
+    "pch" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ROAFinance-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ROAFinance-primary.swiftdeps"
+  },
+  "/Users/roque/finance-blog/apps/ios/ROAFinance/App/ContentView.swift" : {
+    "const-values" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ContentView.swiftconstvalues",
+    "dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ContentView.d",
+    "diagnostics" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ContentView.dia",
+    "index-unit-output-path" : "/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ContentView.o",
+    "llvm-bc" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ContentView.bc",
+    "object" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ContentView.o",
+    "swift-dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ContentView.swiftdeps",
+    "swiftmodule" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ContentView~partial.swiftmodule"
+  },
+  "/Users/roque/finance-blog/apps/ios/ROAFinance/App/ROAFinanceApp.swift" : {
+    "const-values" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ROAFinanceApp.swiftconstvalues",
+    "dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ROAFinanceApp.d",
+    "diagnostics" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ROAFinanceApp.dia",
+    "index-unit-output-path" : "/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ROAFinanceApp.o",
+    "llvm-bc" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ROAFinanceApp.bc",
+    "object" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ROAFinanceApp.o",
+    "swift-dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ROAFinanceApp.swiftdeps",
+    "swiftmodule" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ROAFinanceApp~partial.swiftmodule"
+  },
+  "/Users/roque/finance-blog/apps/ios/ROAFinance/Core/Design/Colors.swift" : {
+    "const-values" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Colors.swiftconstvalues",
+    "dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Colors.d",
+    "diagnostics" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Colors.dia",
+    "index-unit-output-path" : "/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Colors.o",
+    "llvm-bc" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Colors.bc",
+    "object" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Colors.o",
+    "swift-dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Colors.swiftdeps",
+    "swiftmodule" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Colors~partial.swiftmodule"
+  },
+  "/Users/roque/finance-blog/apps/ios/ROAFinance/Core/Design/Typography.swift" : {
+    "const-values" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Typography.swiftconstvalues",
+    "dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Typography.d",
+    "diagnostics" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Typography.dia",
+    "index-unit-output-path" : "/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Typography.o",
+    "llvm-bc" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Typography.bc",
+    "object" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Typography.o",
+    "swift-dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Typography.swiftdeps",
+    "swiftmodule" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Typography~partial.swiftmodule"
+  },
+  "/Users/roque/finance-blog/apps/ios/ROAFinance/Core/Models/Article.swift" : {
+    "const-values" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Article.swiftconstvalues",
+    "dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Article.d",
+    "diagnostics" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Article.dia",
+    "index-unit-output-path" : "/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Article.o",
+    "llvm-bc" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Article.bc",
+    "object" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Article.o",
+    "swift-dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Article.swiftdeps",
+    "swiftmodule" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/Article~partial.swiftmodule"
+  },
+  "/Users/roque/finance-blog/apps/ios/ROAFinance/Core/Network/APIClient.swift" : {
+    "const-values" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/APIClient.swiftconstvalues",
+    "dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/APIClient.d",
+    "diagnostics" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/APIClient.dia",
+    "index-unit-output-path" : "/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/APIClient.o",
+    "llvm-bc" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/APIClient.bc",
+    "object" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/APIClient.o",
+    "swift-dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/APIClient.swiftdeps",
+    "swiftmodule" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/APIClient~partial.swiftmodule"
+  },
+  "/Users/roque/finance-blog/apps/ios/ROAFinance/Features/Article/ArticleView.swift" : {
+    "const-values" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ArticleView.swiftconstvalues",
+    "dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ArticleView.d",
+    "diagnostics" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ArticleView.dia",
+    "index-unit-output-path" : "/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ArticleView.o",
+    "llvm-bc" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ArticleView.bc",
+    "object" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ArticleView.o",
+    "swift-dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ArticleView.swiftdeps",
+    "swiftmodule" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/ArticleView~partial.swiftmodule"
+  },
+  "/Users/roque/finance-blog/apps/ios/ROAFinance/Features/Feed/FeedView.swift" : {
+    "const-values" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/FeedView.swiftconstvalues",
+    "dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/FeedView.d",
+    "diagnostics" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/FeedView.dia",
+    "index-unit-output-path" : "/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/FeedView.o",
+    "llvm-bc" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/FeedView.bc",
+    "object" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/FeedView.o",
+    "swift-dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/FeedView.swiftdeps",
+    "swiftmodule" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/FeedView~partial.swiftmodule"
+  },
+  "/Users/roque/finance-blog/apps/ios/ROAFinance/Features/Feed/FeedViewModel.swift" : {
+    "const-values" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/FeedViewModel.swiftconstvalues",
+    "dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/FeedViewModel.d",
+    "diagnostics" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/FeedViewModel.dia",
+    "index-unit-output-path" : "/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/FeedViewModel.o",
+    "llvm-bc" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/FeedViewModel.bc",
+    "object" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/FeedViewModel.o",
+    "swift-dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/FeedViewModel.swiftdeps",
+    "swiftmodule" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/FeedViewModel~partial.swiftmodule"
+  },
+  "/Users/roque/finance-blog/apps/ios/ROAFinance/Features/Membership/MembershipView.swift" : {
+    "const-values" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/MembershipView.swiftconstvalues",
+    "dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/MembershipView.d",
+    "diagnostics" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/MembershipView.dia",
+    "index-unit-output-path" : "/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/MembershipView.o",
+    "llvm-bc" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/MembershipView.bc",
+    "object" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/MembershipView.o",
+    "swift-dependencies" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/MembershipView.swiftdeps",
+    "swiftmodule" : "/Users/roque/finance-blog/apps/ios/DerivedData/Build/Intermediates.noindex/ROAFinance.build/Debug-iphonesimulator/ROAFinance.build/Objects-normal/arm64/MembershipView~partial.swiftmodule"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "@roa/design-tokens",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./web.css": "./output/web.css"
+  },
+  "scripts": {
+    "build": "tsc && node dist/scripts/generate.js",
+    "dev": "tsc --watch"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.37",
+    "typescript": "^5.8.2"
+  }
+}
